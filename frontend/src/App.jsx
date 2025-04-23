@@ -14,7 +14,7 @@ import Gold from './pages/Gold';
 import AdminViewProducts from './components/AdminViewProducts';
 import EditProductPage from './components/EditProductPage';
 import ProductDetail from './pages/ProductDetail';
-
+import Cart from './pages/Cart';
 function App() {
   const toastRef = useRef();
 
@@ -27,6 +27,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/gold" element={<Gold/>} />
         <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login toastRef={toastRef} />} />
         <Route path="/signup" element={<Signup toastRef={toastRef} />} />
         <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={["admin"]}> <AdminDashboard /></ProtectedRoute>}/>
