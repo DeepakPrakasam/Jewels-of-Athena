@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 const GoldPage = () => {
   const [goldItems, setGoldItems] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetch("http://localhost:5000/api/products")
       .then((res) => res.json()) 
@@ -51,7 +52,7 @@ const GoldPage = () => {
           <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 g-4">
             {goldItems.map((item, index) => (
               <div className="col" key={index}>
-                <div className="card rounded-3 h-100">
+                <div className="card rounded-3 h-100" onClick={() => navigate(`/product/${item._id}`)} style={{ cursor: "pointer" }}>
                   <img
                     className="card-img-top img-fluid rounded-3"
                     src={item.image.startsWith("http") ? item.image : `/${item.image}`}
