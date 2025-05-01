@@ -11,7 +11,7 @@ const Cart = () => {
     const payload = JSON.parse(atob(token.split('.')[1]));
     const userId = payload?.id;
 
-    fetch(`http://localhost:5000/api/cart/${userId}`, {
+    fetch(`/api/cart/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -34,7 +34,7 @@ const Cart = () => {
   const handleRemove = async (productId) => {
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch("http://localhost:5000/api/cart/remove", {
+      const res = await fetch("/api/cart/remove", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -80,7 +80,7 @@ const Cart = () => {
                 <th>Qty</th>
                 <th>Price</th>
                 <th>Subtotal</th>
-                <th></th> {/* for remove btn */}
+                <th>{/* for remove btn */}</th> 
               </tr>
             </thead>
             <tbody>

@@ -9,7 +9,7 @@ const ProductDetail = () => {
   const isLoggedIn = !!localStorage.getItem("token");
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/products/${id}`)
+    fetch(`/api/products/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setProduct(data);
@@ -26,7 +26,7 @@ const ProductDetail = () => {
     if (!token) return alert("Please login first.");
 
     try {
-      const res = await fetch("http://localhost:5000/api/cart/add", {
+      const res = await fetch("/api/cart/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

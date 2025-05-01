@@ -12,7 +12,7 @@ const EditProductPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/products/${id}`)
+    fetch(`/api/products/${id}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch product");
@@ -55,7 +55,7 @@ const EditProductPage = () => {
         formData.append(key, updatedData[key]);
       }
 
-      const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const res = await fetch(`/api/products/${id}`, {
         method: "PUT",
         body: formData,
       });

@@ -7,11 +7,33 @@ const fs = require("fs");
 
 const { ObjectId } = require("mongodb"); // Make sure this is at the top
 
-// GET all products
+// GET all gold products
 router.get("/", async (req, res) => {
   try {
     const db = await connectDB();
     const products = await db.collection("products").find().toArray();
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching products", error: err.message });
+  }
+});
+
+// GET all gold products
+router.get("/gold", async (req, res) => {
+  try {
+    const db = await connectDB();
+    const products = await db.collection("products").find({category:"Gold"}).toArray();
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching products", error: err.message });
+  }
+});
+
+// GET all gold products
+router.get("/silver", async (req, res) => {
+  try {
+    const db = await connectDB();
+    const products = await db.collection("products").find({category:"Silver"}).toArray();
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: "Error fetching products", error: err.message });

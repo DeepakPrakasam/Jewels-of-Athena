@@ -6,7 +6,7 @@ const GoldPage = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   useEffect(() => {
-    fetch("http://localhost:5000/api/products")
+    fetch("/api/products/gold")
       .then((res) => res.json()) 
       .then((data) => {
         console.log("Fetched goldItems =", data);

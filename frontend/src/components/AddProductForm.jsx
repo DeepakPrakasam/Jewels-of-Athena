@@ -47,7 +47,7 @@ const AddProductForm = () => {
 
     try {
       const token = localStorage.getItem("token"); 
-      const response = await fetch("http://localhost:5000/api/admin/add-product", {
+      const response = await fetch('/api/admin/add-product', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

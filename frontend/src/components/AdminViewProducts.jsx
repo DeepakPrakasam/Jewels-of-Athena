@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from "react";
 
+
 const AdminViewProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,7 +12,7 @@ const AdminViewProducts = () => {
 
   // Fetch products from the API
   const fetchProducts = () => {
-    fetch("http://localhost:5000/api/products")
+    fetch('/api/products')
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
@@ -33,7 +34,7 @@ const AdminViewProducts = () => {
   const handleDelete = (id) => {
     // Confirm the deletion
     if (window.confirm("Are you sure you want to delete this product?")) {
-      fetch(`http://localhost:5000/api/products/${id}`, {
+      fetch(`/api/products/${id}`, {
         method: 'DELETE',
       })
         .then((res) => {

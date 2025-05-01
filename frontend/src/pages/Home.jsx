@@ -4,13 +4,14 @@ import Carousel from '../components/Carousel';
 import CategoryCard from '../components/CategoryCard';
 import FeaturedJewelry from '../components/FeaturedJewelry';
 
+
 const Home = () => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/categories'); 
+        const response = await fetch('/api/categories'); 
         const data = await response.json();
         setCategories(data);
       } catch (error) {
