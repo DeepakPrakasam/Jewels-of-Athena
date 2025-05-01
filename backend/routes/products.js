@@ -7,7 +7,7 @@ const fs = require("fs");
 
 const { ObjectId } = require("mongodb"); // Make sure this is at the top
 
-// GET all gold products
+// GET all products
 router.get("/", async (req, res) => {
   try {
     const db = await connectDB();

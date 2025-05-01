@@ -1,12 +1,19 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from "react";
 
+const categoryMap = {
+  Gold: ["Bangles", "Bracelets", "Earrings", "Gold Chains", "Pendants", "Rings"],
+  Silver: ["Anklets", "Bracelets", "Earrings", "Chains", "Rings", "Toe Rings"],
+  Platinum: ["Rings", "Bands"],
+  Diamond: ["Rings", "Earrings", "Necklace", "Bracelet"],
+  Custom: ["Custom Design"]
+};
 
 const AdminViewProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [editProduct, setEditProduct] = useState(null);
-  const [previewImage, setPreviewImage] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
 
   const navigate = useNavigate();
 
@@ -28,18 +35,14 @@ const AdminViewProducts = () => {
     fetchProducts();
   }, []);
 
-  if (loading) return <div className="text-center mt-5">Loading...</div>;
-
   // Handle the delete action
   const handleDelete = (id) => {
-    // Confirm the deletion
     if (window.confirm("Are you sure you want to delete this product?")) {
       fetch(`/api/products/${id}`, {
         method: 'DELETE',
       })
         .then((res) => {
           if (res.ok) {
-            // Remove the deleted product from the state
             setProducts(products.filter((product) => product._id !== id));
             alert("Product deleted successfully!");
           } else {
@@ -53,15 +56,56 @@ const AdminViewProducts = () => {
     }
   };
 
+  // Filter products
+  const filteredProducts = products.filter((product) => {
+    const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
+    const matchesSubcategory = selectedSubcategory ? product.subcategory === selectedSubcategory : true;
+    return matchesCategory && matchesSubcategory;
+  });
+
+  if (loading) return <div className="text-center mt-5">Loading...</div>;
+
   return (
     <div className="container mt-5">
       <h2 className="mb-4 text-start">Manage Products</h2>
 
+      {/* Category and Subcategory Filters */}
+      <div className="mb-4">
+        <div className="d-flex gap-3 align-items-center">
+          <select
+            className="form-select"
+            value={selectedCategory}
+            onChange={(e) => {
+              setSelectedCategory(e.target.value);
+              setSelectedSubcategory("");
+            }}
+          >
+            <option value="">All Categories</option>
+            {Object.keys(categoryMap).map((category) => (
+              <option key={category} value={category}>{category}</option>
+            ))}
+          </select>
+
+          {selectedCategory && (
+            <select
+              className="form-select"
+              value={selectedSubcategory}
+              onChange={(e) => setSelectedSubcategory(e.target.value)}
+            >
+              <option value="">All Subcategories</option>
+              {categoryMap[selectedCategory].map((subcategory) => (
+                <option key={subcategory} value={subcategory}>{subcategory}</option>
+              ))}
+            </select>
+          )}
+        </div>
+      </div>
+
+      {/* Product Cards */}
       <div className="row justify-content-center g-4">
-        {products.map((item) => (
+        {filteredProducts.map((item) => (
           <div className="col-auto" key={item._id}>
             <div className="card rounded-3 h-100 shadow-sm" style={{ width: "18rem" }}>
-              {/* Check if image is a string and starts with "http" */}
               <img
                 className="card-img-top img-fluid rounded-3"
                 src={typeof item.image === "string" && item.image.startsWith("http") ? item.image : `/${item.image}`}
@@ -78,7 +122,6 @@ const AdminViewProducts = () => {
                 >
                   Edit
                 </button>
-
                 <button
                   className="btn btn-outline-danger w-100"
                   onClick={() => handleDelete(item._id)}
@@ -90,6 +133,11 @@ const AdminViewProducts = () => {
           </div>
         ))}
       </div>
+
+      {/* Show message if no products match filter */}
+      {filteredProducts.length === 0 && (
+        <div className="text-center mt-4">No products match your filter.</div>
+      )}
     </div>
   );
 };

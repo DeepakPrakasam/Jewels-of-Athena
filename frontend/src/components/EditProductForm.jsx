@@ -19,7 +19,7 @@ const EditProductForm = ({
 
   const subCategoryOptions = {
     Gold: ["Bangles", "Bracelets", "Earrings", "Gold Chains", "Pendants", "Rings"],
-    Silver: ["Anklets", "Bracelets", "Earrings", "Chains", "Toe Rings"],
+    Silver: ["Anklets", "Bracelets", "Earrings", "Chains", "Rings", "Toe Rings"],
     Platinum: ["Rings", "Bands"],
     Diamond: ["Rings", "Earrings", "Necklace", "Bracelet"],
     Custom: ["Custom Design"],

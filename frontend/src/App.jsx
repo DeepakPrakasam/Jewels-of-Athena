@@ -25,18 +25,18 @@ function App() {
       <Navbar toastRef={toastRef} />  
       <Toast ref={toastRef} />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/gold" element={<Gold/>} />
-        <Route path="/silver" element={<Silver/>} />
-        <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/goldpage/:category" element={<Gold />} />
+        <Route path="/" element={<Home toastRef={toastRef} />} />
+        <Route path="/gold" element={<Gold toastRef={toastRef} />} />
+        <Route path="/silver" element={<Silver toastRef={toastRef} />} />
+        <Route path="/product/:id" element={<ProductDetail toastRef={toastRef} />} />
+        <Route path="/cart" element={<Cart toastRef={toastRef} />} />
+        <Route path="/goldpage/:category" element={<Gold toastRef={toastRef} />} />
         <Route path="/login" element={<Login toastRef={toastRef} />} />
         <Route path="/signup" element={<Signup toastRef={toastRef} />} />
-        <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={["admin"]}> <AdminDashboard /></ProtectedRoute>}/>
-        <Route path="/admin/add-product" element={<ProtectedRoute allowedRoles={["admin"]}><AddProductForm/></ProtectedRoute>}/>
-        <Route path="/admin/view-products" element={<ProtectedRoute allowedRoles={["admin"]}> <AdminViewProducts/> </ProtectedRoute>}/>
-        <Route path="/admin/products/edit/:id" element={<ProtectedRoute allowedRoles={["admin"]}> <EditProductPage/> </ProtectedRoute>}/>
+        <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={["admin"]}> <AdminDashboard toastRef={toastRef} /></ProtectedRoute>}/>
+        <Route path="/admin/add-product" element={<ProtectedRoute allowedRoles={["admin"]}><AddProductForm toastRef={toastRef} /></ProtectedRoute>}/>
+        <Route path="/admin/view-products" element={<ProtectedRoute allowedRoles={["admin"]}> <AdminViewProducts toastRef={toastRef} /> </ProtectedRoute>}/>
+        <Route path="/admin/products/edit/:id" element={<ProtectedRoute allowedRoles={["admin"]}> <EditProductPage toastRef={toastRef} /> </ProtectedRoute>}/>
 
         </Routes>
     </BrowserRouter>
