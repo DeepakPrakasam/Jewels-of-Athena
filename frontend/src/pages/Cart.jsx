@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import { useNavigate } from "react-router-dom"; 
 const Cart = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,9 +55,14 @@ const Cart = () => {
     }
   };
 
+  const navigate = useNavigate(); 
+
   const handleCheckout = () => {
-    alert("💳 Checkout functionality coming soon!");
-    // TODO: Redirect to /checkout or trigger order logic
+  navigate("/checkout", {
+    state: {
+      cartItems: items,
+    },
+    });
   };
 
   const getTotal = () => {
@@ -84,43 +89,56 @@ const Cart = () => {
               </tr>
             </thead>
             <tbody>
-              {items.map((item) => {
-                const imageSrc = item.product.image?.startsWith("http")
-                  ? item.product.image
-                  : `/${item.product.image}`;
+  {items.map((item) => {
+    const imageSrc = item.product.image?.startsWith("http")
+      ? item.product.image
+      : `/${item.product.image}`;
 
-                return (
-                  <tr key={item._id}>
-                    <td>
-                      <div className="d-flex align-items-center gap-3">
-                        <img
-                          src={imageSrc}
-                          alt={item.product.title}
-                          style={{
-                            width: "60px",
-                            height: "60px",
-                            objectFit: "cover",
-                            borderRadius: "8px",
-                          }}
-                        />
-                        <span>{item.product.title}</span>
-                      </div>
-                    </td>
-                    <td>{item.quantity}</td>
-                    <td>₹{item.product.price}</td>
-                    <td>₹{item.quantity * item.product.price}</td>
-                    <td>
-                      <button
-                        className="btn btn-sm btn-danger"
-                        onClick={() => handleRemove(item.product._id)}
-                      >
-                        Remove
-                      </button>
-                    </td>
-                  </tr>
-                );
+    return (
+      <tr key={item._id}>
+        <td>
+          <div className="d-flex align-items-center gap-3">
+            <img
+              src={imageSrc}
+              alt={item.product.title}
+              style={{
+                width: "60px",
+                height: "60px",
+                objectFit: "cover",
+                borderRadius: "8px",
+              }}
+            />
+            <span>{item.product.title}</span>
+          </div>
+        </td>
+        <td>{item.quantity}</td>
+        <td>₹{item.product.price}</td>
+        <td>₹{item.quantity * item.product.price}</td>
+        <td>
+          <div className="d-flex flex-column gap-2">
+            <button
+              className="btn btn-sm btn-danger"
+              onClick={() => handleRemove(item.product._id)}
+            >
+              Remove
+            </button>
+            <button
+              className="btn btn-sm btn-primary"
+              onClick={() => navigate("/checkout", {
+                state: {
+                  product: item.product,
+                  quantity: item.quantity,
+                },
               })}
-            </tbody>
+            >
+              Checkout This
+            </button>
+          </div>
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
           </table>
           <h4>Total: ₹{getTotal()}</h4>
           <button className="btn btn-success mt-3" onClick={handleCheckout}>

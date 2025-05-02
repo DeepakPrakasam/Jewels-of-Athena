@@ -16,6 +16,8 @@ import EditProductPage from './components/EditProductPage';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Silver from './pages/Silver';
+import Checkout from './pages/Checkout';
+import OrderSuccess from './pages/OrderSuccess';
 function App() {
   const toastRef = useRef();
 
@@ -31,6 +33,8 @@ function App() {
         <Route path="/product/:id" element={<ProductDetail toastRef={toastRef} />} />
         <Route path="/cart" element={<Cart toastRef={toastRef} />} />
         <Route path="/goldpage/:category" element={<Gold toastRef={toastRef} />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/login" element={<Login toastRef={toastRef} />} />
         <Route path="/signup" element={<Signup toastRef={toastRef} />} />
         <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={["admin"]}> <AdminDashboard toastRef={toastRef} /></ProtectedRoute>}/>

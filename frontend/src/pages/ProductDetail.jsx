@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 
 const ProductDetail = () => {
@@ -50,9 +50,15 @@ const ProductDetail = () => {
     }
   };
 
+  const navigate = useNavigate(); 
+
   const handleBuyNow = () => {
-    alert("🚀 Proceeding to checkout (Buy Now feature coming soon)");
-    // TODO: Redirect to a checkout/order creation page
+  navigate("/checkout", {
+    state: {
+      product,
+      quantity: 1,
+    },
+    });
   };
 
   if (loading) {

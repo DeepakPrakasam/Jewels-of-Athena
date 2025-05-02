@@ -23,6 +23,9 @@ const cartRoutes = require("./routes/cart");
 app.use("/api/cart", cartRoutes);  // ✅ Enables /api/cart/add etc.
 ;             
 
+const orderRoutes = require("./routes/orders");  // 👈 Add this line
+app.use("/api/orders", orderRoutes);             // 👈 Enable the /api/orders endpoint
+
 
 
 // Base route
