@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useParams,useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 
-const ProductDetail = () => {
+const ProductDetail = ({ toastRef }) => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const isLoggedIn = !!localStorage.getItem("token");
+  
+  const showToast = (message, type) => {
+    toastRef.current?.show(message, type);
+  };
 
   useEffect(() => {
     fetch(`/api/products/${id}`)
@@ -40,9 +44,9 @@ const ProductDetail = () => {
 
       const data = await res.json();
       if (res.ok) {
-        alert("✅ " + data.message);
+        showToast("✅ " + data.message);
       } else {
-        alert("❌ " + data.message);
+        showToast("❌ " + data.message);
       }
     } catch (error) {
       console.error("Add to cart error:", error);
@@ -50,14 +54,14 @@ const ProductDetail = () => {
     }
   };
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleBuyNow = () => {
-  navigate("/checkout", {
-    state: {
-      product,
-      quantity: 1,
-    },
+    navigate("/checkout", {
+      state: {
+        product,
+        quantity: 1,
+      },
     });
   };
 
@@ -88,29 +92,70 @@ const ProductDetail = () => {
                   objectFit: "cover",
                   transition: "transform 0.3s ease",
                 }}
-                onMouseEnter={(e) => e.target.style.transform = "scale(1.05)"}
-                onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
+                onMouseEnter={(e) => (e.target.style.transform = "scale(1.05)")}
+                onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
               />
             </div>
           </div>
           <div className="col-md-6">
-            <div className="product-details card p-4 shadow-sm" style={{ borderRadius: "10px" }}>
-              <h2 className="product-title" style={{ fontSize: "2rem", fontWeight: "bold", color: "#333", marginBottom: "15px" }}>
+            <div
+              className="product-details card p-4 shadow-sm"
+              style={{ borderRadius: "10px" }}
+            >
+              <h2
+                className="product-title"
+                style={{
+                  fontSize: "2rem",
+                  fontWeight: "bold",
+                  color: "#333",
+                  marginBottom: "15px",
+                }}
+              >
                 {product.title}
               </h2>
-              <p style={{ fontSize: "1.1rem", color: "#666", marginBottom: "10px" }}>
+              <p
+                style={{
+                  fontSize: "1.1rem",
+                  color: "#666",
+                  marginBottom: "10px",
+                }}
+              >
                 <strong>Category:</strong> {product.category}
               </p>
-              <p style={{ fontSize: "1.1rem", color: "#666", marginBottom: "10px" }}>
+              <p
+                style={{
+                  fontSize: "1.1rem",
+                  color: "#666",
+                  marginBottom: "10px",
+                }}
+              >
                 <strong>Subcategory:</strong> {product.subcategory}
               </p>
-              <p style={{ fontSize: "1.1rem", color: "#666", marginBottom: "10px" }}>
+              <p
+                style={{
+                  fontSize: "1.1rem",
+                  color: "#666",
+                  marginBottom: "10px",
+                }}
+              >
                 <strong>Metal & Purity:</strong> {product.metalPurity}
               </p>
-              <p style={{ fontSize: "1.1rem", color: "#666", marginBottom: "10px" }}>
+              <p
+                style={{
+                  fontSize: "1.1rem",
+                  color: "#666",
+                  marginBottom: "10px",
+                }}
+              >
                 <strong>Weight:</strong> {product.weight} grams
               </p>
-              <p style={{ fontSize: "1.1rem", color: "#666", marginBottom: "10px" }}>
+              <p
+                style={{
+                  fontSize: "1.1rem",
+                  color: "#666",
+                  marginBottom: "10px",
+                }}
+              >
                 <strong>Price:</strong> ₹{product.price}
               </p>
               <p
@@ -137,8 +182,10 @@ const ProductDetail = () => {
                     transition: "transform 0.3s ease",
                     borderRadius: "5px",
                   }}
-                  onMouseEnter={(e) => e.target.style.transform = "scale(1.05)"}
-                  onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
+                  onMouseEnter={(e) =>
+                    (e.target.style.transform = "scale(1.05)")
+                  }
+                  onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
                 >
                   Add to Cart
                 </button>
@@ -153,14 +200,19 @@ const ProductDetail = () => {
                     transition: "transform 0.3s ease",
                     borderRadius: "5px",
                   }}
-                  onMouseEnter={(e) => e.target.style.transform = "scale(1.05)"}
-                  onMouseLeave={(e) => e.target.style.transform = "scale(1)"}
+                  onMouseEnter={(e) =>
+                    (e.target.style.transform = "scale(1.05)")
+                  }
+                  onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
                 >
                   Buy Now
                 </button>
               </div>
               {!isLoggedIn && (
-                <p className="text-danger mt-2" style={{ fontSize: "1rem", fontWeight: "bold" }}>
+                <p
+                  className="text-danger mt-2"
+                  style={{ fontSize: "1rem", fontWeight: "bold" }}
+                >
                   Please login to make a purchase.
                 </p>
               )}

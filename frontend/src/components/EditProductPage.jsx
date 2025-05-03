@@ -3,11 +3,15 @@ import { useState, useEffect } from "react";
 import EditProductForm from "./EditProductForm";
 import Footer from "./Footer";
 
-const EditProductPage = () => {
+const EditProductPage = ({ toastRef }) => {
   const { id } = useParams();
   const [editProduct, setEditProduct] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const showToast = (message, type) => {
+    toastRef.current?.show(message, type);
+  };
 
   const navigate = useNavigate();
 
@@ -21,9 +25,10 @@ const EditProductPage = () => {
       })
       .then((data) => {
         // Handle image
-        const image = typeof data.image === "string"
-          ? data.image.split(",")[0] // in case it was saved as a comma-separated string
-          : data.image?.path || "";
+        const image =
+          typeof data.image === "string"
+            ? data.image.split(",")[0] // in case it was saved as a comma-separated string
+            : data.image?.path || "";
 
         const imagePath = image.startsWith("http") ? image : `/${image}`;
         setPreviewImage(imagePath);
@@ -62,12 +67,13 @@ const EditProductPage = () => {
 
       if (!res.ok) {
         const errorText = await res.text();
+
         console.error("Failed to update product:", errorText);
         throw new Error("Failed to update product");
       }
 
       await res.json();
-      alert("Product updated successfully!");
+      showToast("Product updated successfully!","success");
       navigate("/admin/view-products");
     } catch (error) {
       console.error("Error submitting form:", error);

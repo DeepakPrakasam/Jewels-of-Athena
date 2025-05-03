@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import Footer from '../components/Footer';
-import Carousel from '../components/Carousel';
-import CategoryCard from '../components/CategoryCard';
-import FeaturedJewelry from '../components/FeaturedJewelry';
-
+import React, { useEffect, useState } from "react";
+import Footer from "../components/Footer";
+import Carousel from "../components/Carousel";
+import CategoryCard from "../components/CategoryCard";
+import FeaturedJewelry from "../components/FeaturedJewelry";
 
 const Home = () => {
   const [categories, setCategories] = useState([]);
@@ -11,11 +10,11 @@ const Home = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('/api/categories'); 
+        const response = await fetch("/api/categories");
         const data = await response.json();
         setCategories(data);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     };
 

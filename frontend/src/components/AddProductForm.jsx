@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Footer from "../components/Footer";
 
-const AddProductForm = () => {
+const AddProductForm = ({ toastRef }) => {
   // Form state
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
@@ -12,10 +12,28 @@ const AddProductForm = () => {
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
 
+  const showToast = (message, type) => {
+    toastRef.current?.show(message, type);
+  };
+
   // Subcategory options based on selected category
   const subCategoryOptions = {
-    Gold: ["Bangles", "Bracelets", "Earrings", "Gold Chains", "Pendants", "Rings"],
-    Silver: ["Anklets", "Bracelets", "Earrings", "Chains", "Rings", "Toe Rings"],
+    Gold: [
+      "Bangles",
+      "Bracelets",
+      "Earrings",
+      "Gold Chains",
+      "Pendants",
+      "Rings",
+    ],
+    Silver: [
+      "Anklets",
+      "Bracelets",
+      "Earrings",
+      "Chains",
+      "Rings",
+      "Toe Rings",
+    ],
     Platinum: ["Rings", "Bands"],
     Diamond: ["Rings", "Earrings", "Necklace", "Bracelet"],
     Custom: ["Custom Design"],
@@ -37,7 +55,7 @@ const AddProductForm = () => {
     const productData = {
       title,
       category,
-      subcategory: subCategory, 
+      subcategory: subCategory,
       metalPurity,
       weight,
       description,
@@ -46,8 +64,8 @@ const AddProductForm = () => {
     };
 
     try {
-      const token = localStorage.getItem("token"); 
-      const response = await fetch('/api/admin/add-product', {
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/admin/add-product", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,7 +77,7 @@ const AddProductForm = () => {
       const data = await response.json();
 
       if (response.ok) {
-        console.log("Product added successfully:", data);
+        showToast("Product added successfully:", "success");
         // Handle success (e.g., redirect or show success message)
         // Clear the form after submission
         setTitle("");
@@ -71,6 +89,7 @@ const AddProductForm = () => {
         setPrice("");
         setImage("");
       } else {
+        showToast("Error adding product:", "danger");
         console.error("Error adding product:", data);
         // Handle error (show error message, etc.)
       }
@@ -152,7 +171,9 @@ const AddProductForm = () => {
               >
                 <option value="">Select Subcategory</option>
                 {subCategoryOptions[category].map((sub, index) => (
-                  <option key={index} value={sub}>{sub}</option>
+                  <option key={index} value={sub}>
+                    {sub}
+                  </option>
                 ))}
               </select>
             </div>

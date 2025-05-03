@@ -18,6 +18,8 @@ import Cart from './pages/Cart';
 import Silver from './pages/Silver';
 import Checkout from './pages/Checkout';
 import OrderSuccess from './pages/OrderSuccess';
+import VerifyEmail from './components/VerifyEmail';
+import LoginWithOtp from './components/LoginWithOtp';
 function App() {
   const toastRef = useRef();
 
@@ -37,6 +39,8 @@ function App() {
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/login" element={<Login toastRef={toastRef} />} />
         <Route path="/signup" element={<Signup toastRef={toastRef} />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/login-otp" element={<LoginWithOtp toastRef={toastRef} />} />
         <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={["admin"]}> <AdminDashboard toastRef={toastRef} /></ProtectedRoute>}/>
         <Route path="/admin/add-product" element={<ProtectedRoute allowedRoles={["admin"]}><AddProductForm toastRef={toastRef} /></ProtectedRoute>}/>
         <Route path="/admin/view-products" element={<ProtectedRoute allowedRoles={["admin"]}> <AdminViewProducts toastRef={toastRef} /> </ProtectedRoute>}/>

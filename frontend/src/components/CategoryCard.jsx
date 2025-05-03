@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 const CategoryCard = ({ title, image }) => {
   return (
@@ -7,7 +7,7 @@ const CategoryCard = ({ title, image }) => {
       <Link
         to={`/goldpage/${title}`}
         className="text-decoration-none"
-        style={{ color: 'inherit' }}
+        style={{ color: "inherit" }}
       >
         <div
           className="card h-100 shadow-sm border-0 rounded-4"
@@ -27,7 +27,6 @@ const CategoryCard = ({ title, image }) => {
             className="card-img-top img-fluid rounded-top"
             src={image}
             alt={title}
-            
           />
           <div className="card-body d-flex align-items-center justify-content-center bg-light">
             <h5 className="card-title text-center fw-semibold m-0">{title}</h5>

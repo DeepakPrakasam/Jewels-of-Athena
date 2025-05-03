@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Footer from "../components/Footer";
 
-const Checkout = () => {
+const Checkout = ({ toastRef }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { product, quantity, cartItems } = location.state || {};
+
+  const showToast = (message, type) => {
+    toastRef.current?.show(message, type);
+  };
 
   const [form, setForm] = useState({
     fullName: "",
@@ -48,14 +53,14 @@ const Checkout = () => {
 
       const data = await res.json();
       if (res.ok) {
-        alert("✅ Order placed successfully!");
+        showToast("✅ Order placed successfully!","success");
         navigate("/order-success");
       } else {
-        alert("❌ " + data.message);
+        showToast("❌ " + data.message, "danger");
       }
     } catch (err) {
       console.error("Order error:", err);
-      alert("Something went wrong.");
+      showToast("Something went wrong.", "danger");
     }
   };
 
@@ -64,97 +69,119 @@ const Checkout = () => {
   }
 
   return (
-    <div className="container mt-5">
+    <>
+      <div className="container mt-5">
         <h2 className="text-center mb-4">Checkout</h2>
-      <div className="row">
-        {/* Shipping Details Form */}
-        <div className="col-md-6">
-          <div
-            style={{
-              padding: "20px",
-              border: "1px solid #ddd",
-              borderRadius: "20px",
-              backgroundColor: "#fff",
-            }}
-          >
+        <div className="row">
+          {/* Shipping Details Form */}
+          <div className="col-md-6">
             <div
               style={{
-                backgroundColor: "#fff3d3",
-                padding: "15px",
-                textAlign: "center",
-                borderRadius: "10px 10px 0 0",
-                marginBottom: "20px",
+                padding: "20px",
+                border: "1px solid #ddd",
+                borderRadius: "20px",
+                backgroundColor: "#fff",
               }}
             >
-              <h4 className="mb-3 rounded-3">Shipping Details</h4>
-            </div>
+              <div
+                style={{
+                  backgroundColor: "#fff3d3",
+                  padding: "15px",
+                  textAlign: "center",
+                  borderRadius: "10px 10px 0 0",
+                  marginBottom: "20px",
+                }}
+              >
+                <h4 className="mb-3 rounded-3">Shipping Details</h4>
+              </div>
 
-            <form>
-              {["fullName", "phone", "email", "address", "city", "state", "zip", "country"].map((field) => (
-                <div className="mb-3" key={field}>
-                  <label htmlFor={field} className="form-label">
-                    {field[0].toUpperCase() + field.slice(1)}
-                  </label>
-                  <input
-                    id={field}
-                    className="form-control"
-                    type={field === "email" ? "email" : "text"}
-                    name={field}
-                    value={form[field]}
-                    onChange={handleChange}
-                    required
-                    style={{ minWidth: "250px" }}
+              <form>
+                {[
+                  "fullName",
+                  "phone",
+                  "email",
+                  "address",
+                  "city",
+                  "state",
+                  "zip",
+                  "country",
+                ].map((field) => (
+                  <div className="mb-3" key={field}>
+                    <label htmlFor={field} className="form-label">
+                      {field[0].toUpperCase() + field.slice(1)}
+                    </label>
+                    <input
+                      id={field}
+                      className="form-control"
+                      type={field === "email" ? "email" : "text"}
+                      name={field}
+                      value={form[field]}
+                      onChange={handleChange}
+                      required
+                      style={{ minWidth: "250px" }}
+                    />
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  className="btn btn-outline-success w-100 mt-4"
+                  onClick={handlePlaceOrder}
+                >
+                  Place Order
+                </button>
+              </form>
+            </div>
+          </div>
+
+          {/* Product Details (Order Summary) */}
+          <div className="col-md-6">
+            <div
+              style={{
+                padding: "20px",
+                border: "1px solid #ddd",
+                borderRadius: "20px",
+                backgroundColor: "#fff",
+              }}
+            >
+              <h4 className="mb-3">Order Summary</h4>
+              {itemsToCheckout.map((item, index) => (
+                <div key={index} className="d-flex mb-3">
+                  <img
+                    src={
+                      item.product.image?.startsWith("http")
+                        ? item.product.image
+                        : `/${item.product.image}`
+                    }
+                    alt={item.product.title}
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                    }}
+                    className="me-3"
                   />
+                  <div>
+                    <h5>{item.product.title}</h5>
+                    <p>Price: ₹{item.product.price}</p>
+                    <p>Qty: {item.quantity}</p>
+                  </div>
                 </div>
               ))}
-              <button
-                type="button"
-                className="btn btn-outline-success w-100 mt-4"
-                onClick={handlePlaceOrder}
-              >
-                Place Order
-              </button>
-            </form>
-          </div>
-        </div>
-
-        {/* Product Details (Order Summary) */}
-        <div className="col-md-6">
-          <div
-            style={{
-              padding: "20px",
-              border: "1px solid #ddd",
-              borderRadius: "20px",
-              backgroundColor: "#fff",
-            }}
-          >
-            <h4 className="mb-3">Order Summary</h4>
-            {itemsToCheckout.map((item, index) => (
-              <div key={index} className="d-flex mb-3">
-                <img
-                  src={item.product.image?.startsWith("http") ? item.product.image : `/${item.product.image}`}
-                  alt={item.product.title}
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    objectFit: "cover",
-                    borderRadius: "8px",
-                  }}
-                  className="me-3"
-                />
-                <div>
-                  <h5>{item.product.title}</h5>
-                  <p>Price: ₹{item.product.price}</p>
-                  <p>Qty: {item.quantity}</p>
-                </div>
-              </div>
-            ))}
-            <hr />
-            <h5>Total: ₹{itemsToCheckout.reduce((total, item) => total + item.quantity * item.product.price, 0)}</h5>
+              <hr />
+              <h5>
+                Total: ₹
+                {itemsToCheckout.reduce(
+                  (total, item) => total + item.quantity * item.product.price,
+                  0
+                )}
+              </h5>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 };
 
