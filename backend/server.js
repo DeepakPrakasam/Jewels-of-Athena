@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");  // Add this line
-const authRoutes = require("./routes/auth");
 const connectDB = require("./db/mongoClient");
 
 dotenv.config();
@@ -12,7 +11,12 @@ app.use(cors());
 app.use(bodyParser.json());  // Use this middleware to parse JSON requests
 
 // Routes
-app.use("/api/auth", authRoutes);
+
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes);
+
+
+
 const adminRoutes = require('./routes/admin');
 app.use('/api/admin', adminRoutes);
 

@@ -40,8 +40,8 @@ const FeaturedJewelry = () => {
               textShadow: "1px 1px 4px rgba(0,0,0,0.6)",
             }}
           >
-            Trust us to be part of your precious moments and to deliver jewellery
-            that you'll cherish forever.
+            Trust us to be part of your precious moments and to deliver
+            jewellery that you'll cherish forever.
           </h2>
         </i>
 

@@ -6,11 +6,11 @@ const EditProductForm = ({
   handleEditSubmit,
   handleEditChange,
   previewImage,
-  setPreviewImage
+  setPreviewImage,
 }) => {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
-  const [subCategory, setSubCategory] = useState("");
+  const [subcategory, setSubCategory] = useState("");
   const [metalPurity, setMetalPurity] = useState("");
   const [weight, setWeight] = useState("");
   const [description, setDescription] = useState("");
@@ -18,8 +18,22 @@ const EditProductForm = ({
   const [image, setImage] = useState("");
 
   const subCategoryOptions = {
-    Gold: ["Bangles", "Bracelets", "Earrings", "Gold Chains", "Pendants", "Rings"],
-    Silver: ["Anklets", "Bracelets", "Earrings", "Chains", "Rings", "Toe Rings"],
+    Gold: [
+      "Bangles",
+      "Bracelets",
+      "Earrings",
+      "Gold Chains",
+      "Pendants",
+      "Rings",
+    ],
+    Silver: [
+      "Anklets",
+      "Bracelets",
+      "Earrings",
+      "Chains",
+      "Rings",
+      "Toe Rings",
+    ],
     Platinum: ["Rings", "Bands"],
     Diamond: ["Rings", "Earrings", "Necklace", "Bracelet"],
     Custom: ["Custom Design"],
@@ -29,7 +43,7 @@ const EditProductForm = ({
     if (product) {
       setTitle(product.title || "");
       setCategory(product.category || "");
-      setSubCategory(product.subCategory || "");
+      setSubCategory(product.subcategory || "");
       setMetalPurity(product.metalPurity || "");
       setWeight(product.weight || "");
       setDescription(product.description || "");
@@ -55,12 +69,12 @@ const EditProductForm = ({
     const updatedProduct = {
       title,
       category,
-      subCategory,
+      subcategory,
       metalPurity,
       weight,
       description,
       price,
-      image
+      image,
     };
     await handleEditSubmit(updatedProduct);
   };
@@ -73,7 +87,7 @@ const EditProductForm = ({
         padding: "20px",
         border: "1px solid #ddd",
         borderRadius: "20px",
-        backgroundColor: "#fff"
+        backgroundColor: "#fff",
       }}
     >
       <div
@@ -106,20 +120,24 @@ const EditProductForm = ({
         >
           <option value="">Select Category</option>
           {Object.keys(subCategoryOptions).map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
           ))}
         </select>
 
         {category && (
           <select
             className="form-select mb-3"
-            value={subCategory}
+            value={subcategory}
             onChange={(e) => setSubCategory(e.target.value)}
             required
           >
             <option value="">Select Subcategory</option>
             {subCategoryOptions[category].map((sub, idx) => (
-              <option key={idx} value={sub}>{sub}</option>
+              <option key={idx} value={sub}>
+                {sub}
+              </option>
             ))}
           </select>
         )}
@@ -186,8 +204,16 @@ const EditProductForm = ({
         )}
 
         <div className="mb-3 d-flex gap-3">
-          <button className="btn btn-outline-secondary w-100" type="submit">Save Changes</button>
-          <button className="btn btn-outline-danger w-100" type="button" onClick={handleCancel}>Cancel</button>
+          <button className="btn btn-outline-secondary w-100" type="submit">
+            Save Changes
+          </button>
+          <button
+            className="btn btn-outline-danger w-100"
+            type="button"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
         </div>
       </form>
     </div>

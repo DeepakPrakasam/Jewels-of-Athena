@@ -10,7 +10,15 @@ const SilverPage = () => {
 
   const navigate = useNavigate();
 
-  const categories = ["All", "Anklets", "Bracelets", "Earrings", "Chains", "Rings", "Toe Rings"];
+  const categories = [
+    "All",
+    "Anklets",
+    "Bracelets",
+    "Earrings",
+    "Chains",
+    "Rings",
+    "Toe Rings",
+  ];
 
   useEffect(() => {
     fetch("/api/products/silver")

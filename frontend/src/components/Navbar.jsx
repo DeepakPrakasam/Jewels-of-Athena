@@ -11,13 +11,12 @@ function Navbar({ toastRef }) {
     const userRole = localStorage.getItem("role");
     setIsLoggedIn(!!token);
     setRole(userRole);
-  
+
     // Redirect to dashboard ONLY if current path is exactly "/admin"
     if (userRole === "admin" && window.location.pathname === "/admin") {
       navigate("/admin/dashboard");
     }
   }, [navigate]);
-  
 
   const showToast = (message, type = "primary") => {
     toastRef?.current?.show(message, type);
@@ -33,15 +32,28 @@ function Navbar({ toastRef }) {
   };
 
   return (
-    <nav className="navbar navbar-expand-sm navbar-light rounded-2" style={{ backgroundColor: "#ffd0d0" }}>
+    <nav
+      className="navbar navbar-expand-sm navbar-light rounded-2"
+      style={{ backgroundColor: "#ffd0d0" }}
+    >
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/"><strong>DJ</strong></Link>
-        
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <Link className="navbar-brand" to="/">
+          <strong>DJ</strong>
+        </Link>
+
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
           <span className="navbar-toggler-icon"></span>
         </button>
-        
-        <div className="collapse navbar-collapse justify-content-lg-center" id="navbarNav">
+
+        <div
+          className="collapse navbar-collapse justify-content-lg-center"
+          id="navbarNav"
+        >
           <ul className="navbar-nav">
             {role === "admin" ? (
               <>
@@ -57,26 +69,52 @@ function Navbar({ toastRef }) {
                   </Link>
                   <ul className="dropdown-menu">
                     <li>
-                      <Link className="dropdown-item" to="/admin/view-products">View All Products</Link>
+                      <Link className="dropdown-item" to="/admin/view-products">
+                        View All Products
+                      </Link>
                     </li>
                     <li>
-                      <Link className="dropdown-item" to="/admin/add-product">Add Product</Link>
+                      <Link className="dropdown-item" to="/admin/add-product">
+                        Add Product
+                      </Link>
                     </li>
                   </ul>
                 </li>
 
                 {/* Manage Orders */}
                 <li className="nav-item">
-                  <Link className="nav-link" to="/admin/orders"><strong>Manage Orders</strong></Link>
+                  <Link className="nav-link" to="/admin/orders">
+                    <strong>Manage Orders</strong>
+                  </Link>
                 </li>
               </>
             ) : (
               <>
-                <li className="nav-item"><Link className="nav-link" to="/"><strong>All Jewellery</strong></Link></li>
-                <li className="nav-item"><Link className="nav-link" to="/gold"><strong>Gold</strong></Link></li>
-                <li className="nav-item"><Link className="nav-link" to="/silver"><strong>Silver</strong></Link></li>
-                <li className="nav-item"><Link className="nav-link" to="#"><strong>Platinum</strong></Link></li>
-                <li className="nav-item"><Link className="nav-link" to="#"><strong>Collections</strong></Link></li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/">
+                    <strong>All Jewellery</strong>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/gold">
+                    <strong>Gold</strong>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/silver">
+                    <strong>Silver</strong>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="#">
+                    <strong>Platinum</strong>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="#">
+                    <strong>Collections</strong>
+                  </Link>
+                </li>
               </>
             )}
           </ul>
@@ -86,7 +124,10 @@ function Navbar({ toastRef }) {
         <div className="d-flex align-items-center" id="auth-buttons">
           {isLoggedIn ? (
             <>
-              <button className="btn btn-link text-dark me-3" onClick={handleLogout}>
+              <button
+                className="btn btn-link text-dark me-3"
+                onClick={handleLogout}
+              >
                 <i className="fas fa-sign-out-alt me-2"></i> LOG OUT
               </button>
               {role !== "admin" && (

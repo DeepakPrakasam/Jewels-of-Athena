@@ -1,25 +1,36 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 
 const categoryMap = {
-  Gold: ["Bangles", "Bracelets", "Earrings", "Gold Chains", "Pendants", "Rings"],
+  Gold: [
+    "Bangles",
+    "Bracelets",
+    "Earrings",
+    "Gold Chains",
+    "Pendants",
+    "Rings",
+  ],
   Silver: ["Anklets", "Bracelets", "Earrings", "Chains", "Rings", "Toe Rings"],
   Platinum: ["Rings", "Bands"],
   Diamond: ["Rings", "Earrings", "Necklace", "Bracelet"],
-  Custom: ["Custom Design"]
+  Custom: ["Custom Design"],
 };
 
-const AdminViewProducts = () => {
+const AdminViewProducts = ({ toastRef }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
 
+  const showToast = (message, type) => {
+    toastRef.current?.show(message, type);
+  };
+
   const navigate = useNavigate();
 
   // Fetch products from the API
   const fetchProducts = () => {
-    fetch('/api/products')
+    fetch("/api/products")
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
@@ -39,14 +50,14 @@ const AdminViewProducts = () => {
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       fetch(`/api/products/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       })
         .then((res) => {
           if (res.ok) {
             setProducts(products.filter((product) => product._id !== id));
-            alert("Product deleted successfully!");
+            showToast("Product deleted successfully!", "success");
           } else {
-            alert("Failed to delete product.");
+            showToast("Failed to delete product.","danger");
           }
         })
         .catch((err) => {
@@ -58,8 +69,12 @@ const AdminViewProducts = () => {
 
   // Filter products
   const filteredProducts = products.filter((product) => {
-    const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
-    const matchesSubcategory = selectedSubcategory ? product.subcategory === selectedSubcategory : true;
+    const matchesCategory = selectedCategory
+      ? product.category === selectedCategory
+      : true;
+    const matchesSubcategory = selectedSubcategory
+      ? product.subcategory === selectedSubcategory
+      : true;
     return matchesCategory && matchesSubcategory;
   });
 
@@ -82,7 +97,9 @@ const AdminViewProducts = () => {
           >
             <option value="">All Categories</option>
             {Object.keys(categoryMap).map((category) => (
-              <option key={category} value={category}>{category}</option>
+              <option key={category} value={category}>
+                {category}
+              </option>
             ))}
           </select>
 
@@ -94,7 +111,9 @@ const AdminViewProducts = () => {
             >
               <option value="">All Subcategories</option>
               {categoryMap[selectedCategory].map((subcategory) => (
-                <option key={subcategory} value={subcategory}>{subcategory}</option>
+                <option key={subcategory} value={subcategory}>
+                  {subcategory}
+                </option>
               ))}
             </select>
           )}
@@ -105,10 +124,18 @@ const AdminViewProducts = () => {
       <div className="row justify-content-center g-4">
         {filteredProducts.map((item) => (
           <div className="col-auto" key={item._id}>
-            <div className="card rounded-3 h-100 shadow-sm" style={{ width: "18rem" }}>
+            <div
+              className="card rounded-3 h-100 shadow-sm"
+              style={{ width: "18rem" }}
+            >
               <img
                 className="card-img-top img-fluid rounded-3"
-                src={typeof item.image === "string" && item.image.startsWith("http") ? item.image : `/${item.image}`}
+                src={
+                  typeof item.image === "string" &&
+                  item.image.startsWith("http")
+                    ? item.image
+                    : `/${item.image}`
+                }
                 alt={item.title}
               />
               <div className="card-body text-center">

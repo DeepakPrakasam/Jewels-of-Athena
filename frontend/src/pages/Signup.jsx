@@ -19,14 +19,14 @@ const Signup = ({ toastRef }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (form.password !== form.confirmPassword) {
       toastRef?.current?.show("Passwords do not match", "danger");
       return;
     }
-
+  
     try {
-      const res = await fetch("/api/auth/signup", {
+      const res = await fetch("api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,8 +38,10 @@ const Signup = ({ toastRef }) => {
           password: form.password,
         }),
       });
-
-      const data = await res.json();
+  
+      const text = await res.text();
+      const data = text ? JSON.parse(text) : {};
+  
       if (res.ok) {
         toastRef?.current?.show("Signup successful!", "success");
         navigate("/login");
@@ -51,6 +53,7 @@ const Signup = ({ toastRef }) => {
       toastRef?.current?.show("Signup failed. Please try again.", "danger");
     }
   };
+  
 
   return (
     <>

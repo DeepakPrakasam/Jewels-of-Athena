@@ -10,7 +10,15 @@ const GoldPage = () => {
 
   const navigate = useNavigate();
 
-  const categories = ["All", "Bangles", "Bracelets", "Earrings", "Gold Chains", "Pendants", "Rings"];
+  const categories = [
+    "All",
+    "Bangles",
+    "Bracelets",
+    "Earrings",
+    "Gold Chains",
+    "Pendants",
+    "Rings",
+  ];
 
   useEffect(() => {
     fetch("/api/products/gold")

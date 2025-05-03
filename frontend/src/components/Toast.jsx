@@ -1,12 +1,12 @@
-import { useRef, useImperativeHandle, forwardRef } from 'react';
+import { useRef, useImperativeHandle, forwardRef } from "react";
 
 const Toast = forwardRef(({ message, type }, ref) => {
   const toastRef = useRef();
 
   useImperativeHandle(ref, () => ({
-    show: (message, type = 'primary') => {
+    show: (message, type = "primary") => {
       const toastElement = toastRef.current;
-      const toastBody = toastElement.querySelector('.toast-body');
+      const toastBody = toastElement.querySelector(".toast-body");
 
       toastBody.textContent = message;
       toastElement.className = `toast align-items-center text-bg-${type} border-0`;
@@ -17,14 +17,16 @@ const Toast = forwardRef(({ message, type }, ref) => {
           const toast = new window.bootstrap.Toast(toastElement);
           toast.show();
         } else {
-          console.warn("⚠️ Bootstrap Toast is not available. Using fallback alert.");
+          console.warn(
+            "⚠️ Bootstrap Toast is not available. Using fallback alert."
+          );
           alert(message); // fallback
         }
       } catch (err) {
         console.error("🚨 Toast error:", err);
         alert(message); // fallback in case of unexpected error
       }
-    }
+    },
   }));
 
   return (
