@@ -238,8 +238,8 @@ function Login({ toastRef }) {
               New User? Sign Up
             </a>{" "}
             |{" "}
-            <a href="#" style={{ color: "#7a2f00" }}>
-              Forgot Password
+            <a href="/forgot-password" style={{ color: "#7a2f00" }}>
+              Forgot Password?
             </a>
           </div>
         </form>
