@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
-const Cart = () => {
+const Cart = ({ toastRef }) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const showToast = (message, type) => {
+    toastRef.current?.show(message, type);
+  };
 
   const fetchCart = () => {
     const token = localStorage.getItem("token");
@@ -46,10 +50,10 @@ const Cart = () => {
 
       const data = await res.json();
       if (res.ok) {
-        alert("🗑️ " + data.message);
+        showToast("🗑️ " + data.message,"success");
         fetchCart(); // refresh cart
       } else {
-        alert("❌ " + data.message);
+        showToast("❌ " + data.message,"danger");
       }
     } catch (err) {
       console.error("Remove item error:", err);

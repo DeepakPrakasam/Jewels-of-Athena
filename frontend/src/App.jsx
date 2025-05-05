@@ -20,6 +20,9 @@ import Checkout from './pages/Checkout';
 import OrderSuccess from './pages/OrderSuccess';
 import VerifyEmail from './components/VerifyEmail';
 import LoginWithOtp from './components/LoginWithOtp';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+
 function App() {
   const toastRef = useRef();
 
@@ -35,12 +38,15 @@ function App() {
         <Route path="/product/:id" element={<ProductDetail toastRef={toastRef} />} />
         <Route path="/cart" element={<Cart toastRef={toastRef} />} />
         <Route path="/goldpage/:category" element={<Gold toastRef={toastRef} />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/order-success" element={<OrderSuccess />} />
+        <Route path="/checkout" element={<Checkout toastRef={toastRef} />} />
+        <Route path="/order-success" element={<OrderSuccess toastRef={toastRef} />} />
         <Route path="/login" element={<Login toastRef={toastRef} />} />
         <Route path="/signup" element={<Signup toastRef={toastRef} />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/login-otp" element={<LoginWithOtp toastRef={toastRef} />} />
+        <Route path="/forgot-password" element={<ForgotPassword toastRef={toastRef} />} />
+        <Route path="/reset-password" element={<ResetPassword toastRef={toastRef} />} />
+
         <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={["admin"]}> <AdminDashboard toastRef={toastRef} /></ProtectedRoute>}/>
         <Route path="/admin/add-product" element={<ProtectedRoute allowedRoles={["admin"]}><AddProductForm toastRef={toastRef} /></ProtectedRoute>}/>
         <Route path="/admin/view-products" element={<ProtectedRoute allowedRoles={["admin"]}> <AdminViewProducts toastRef={toastRef} /> </ProtectedRoute>}/>

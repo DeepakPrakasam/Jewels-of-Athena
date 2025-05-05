@@ -62,7 +62,7 @@ const AdminViewProducts = ({ toastRef }) => {
         })
         .catch((err) => {
           console.error("Error deleting product:", err);
-          alert("Failed to delete product.");
+          showToast("Failed to delete product.");
         });
     }
   };

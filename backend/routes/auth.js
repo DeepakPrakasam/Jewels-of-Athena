@@ -3,7 +3,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const connectDB = require("../db/mongoClient");
 const nodemailer = require("nodemailer");
-
+const crypto = require("crypto");
+const dotenv = require("dotenv");
 const router = express.Router();
 
 const transporter = nodemailer.createTransport({
@@ -25,12 +26,15 @@ router.post("/signup", async (req, res) => {
     const users = db.collection("users");
 
     const existingUser = await users.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: "Email already exists" });
+    if (existingUser)
+      return res.status(400).json({ message: "Email already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const role = adminKey === process.env.ADMIN_SECRET ? "admin" : "user";
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "1d" });
+    const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
 
     const newUser = {
       name,
@@ -52,10 +56,14 @@ router.post("/signup", async (req, res) => {
       subject: "Verify Your Email",
       html: `<p>Click the link to verify your email: <a href="${verifyLink}">${verifyLink}</a></p>`,
     });
-    res.status(200).json({ message: "Signup successful! Please verify your email." });
+    res
+      .status(200)
+      .json({ message: "Signup successful! Please verify your email." });
   } catch (emailErr) {
     console.error("Email sending error:", emailErr);
-    return res.status(500).json({ message: "Failed to send verification email" });
+    return res
+      .status(500)
+      .json({ message: "Failed to send verification email" });
   }
 });
 
@@ -72,12 +80,79 @@ router.get("/verify-email", async (req, res) => {
 
     if (user.isVerified) return res.status(200).send("Email already verified.");
 
-    await users.updateOne({ email: decoded.email }, { $set: { isVerified: true }, $unset: { verificationToken: "" } });
+    await users.updateOne(
+      { email: decoded.email },
+      { $set: { isVerified: true }, $unset: { verificationToken: "" } }
+    );
 
     res.status(200).send("Email verified successfully!");
   } catch (err) {
     console.error(err);
     res.status(400).send("Invalid or expired token.");
+  }
+});
+
+router.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
+  try {
+    const db = await connectDB();
+    const users = db.collection("users");
+    const user = await users.findOne({ email });
+
+    if (!user)
+      return res.status(404).json({ message: "No user found with that email" });
+
+    const token = crypto.randomBytes(32).toString("hex");
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 min
+
+    await users.updateOne(
+      { _id: user._id },
+      {
+        $set: { resetToken: token, resetTokenExpires: expiresAt },
+      }
+    );
+
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}&email=${email}`;
+
+    await transporter.sendMail({
+      from: `"Dhandapani Jewellery" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Password Reset",
+      html: `<p>Click to reset your password: <a href="${resetLink}">${resetLink}</a></p>`,
+    });
+
+    res.status(200).json({ message: "Reset link sent" });
+  } catch (err) {
+    console.error("Forgot password error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.post("/reset-password", async (req, res) => {
+  const { email, token, newPassword } = req.body;
+
+  try {
+    const db = await connectDB();
+    const users = db.collection("users");
+    const user = await users.findOne({ email, resetToken: token });
+
+    if (!user || new Date(user.resetTokenExpires) < new Date()) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await users.updateOne(
+      { _id: user._id },
+      {
+        $set: { password: hashedPassword },
+        $unset: { resetToken: "", resetTokenExpires: "" },
+      }
+    );
+
+    res.status(200).json({ message: "Password reset successful" });
+  } catch (err) {
+    console.error("Reset password error:", err);
+    res.status(500).json({ message: "Failed to reset password" });
   }
 });
 
@@ -92,14 +167,22 @@ router.post("/login", async (req, res) => {
     const user = await users.findOne({ email });
     if (!user) return res.status(400).json({ message: "User not found" });
 
-    if (!user.isVerified) return res.status(403).json({ message: "Please verify your email before logging in" });
+    if (!user.isVerified)
+      return res
+        .status(403)
+        .json({ message: "Please verify your email before logging in" });
 
     const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword) return res.status(400).json({ message: "Incorrect password" });
+    if (!validPassword)
+      return res.status(400).json({ message: "Incorrect password" });
 
-    const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, process.env.JWT_SECRET, {
-      expiresIn: "2h",
-    });
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "2h",
+      }
+    );
 
     res.status(200).json({ message: "Login successful", token });
   } catch (err) {
@@ -120,14 +203,20 @@ router.post("/send-otp", async (req, res) => {
     });
 
     if (!user) return res.status(404).json({ message: "User not found" });
-    if (!user.isVerified) return res.status(403).json({ message: "Please verify your email first" });
+    if (!user.isVerified)
+      return res
+        .status(403)
+        .json({ message: "Please verify your email first" });
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // expires in 5 min
 
-    await users.updateOne({ _id: user._id }, {
-      $set: { otp, otpExpiresAt: expiresAt }
-    });
+    await users.updateOne(
+      { _id: user._id },
+      {
+        $set: { otp, otpExpiresAt: expiresAt },
+      }
+    );
 
     await transporter.sendMail({
       from: `"Dhandapani Jewellery" <${process.env.EMAIL_USER}>`,
@@ -161,11 +250,18 @@ router.post("/verify-otp", async (req, res) => {
     }
 
     // OTP is valid — clear it
-    await users.updateOne({ _id: user._id }, { $unset: { otp: "", otpExpiresAt: "" } });
+    await users.updateOne(
+      { _id: user._id },
+      { $unset: { otp: "", otpExpiresAt: "" } }
+    );
 
-    const token = jwt.sign({ id: user._id, email: user.email, role: user.role }, process.env.JWT_SECRET, {
-      expiresIn: "2h",
-    });
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "2h",
+      }
+    );
 
     res.status(200).json({ message: "Login successful", token });
   } catch (err) {
@@ -173,6 +269,5 @@ router.post("/verify-otp", async (req, res) => {
     res.status(500).json({ message: "OTP verification failed" });
   }
 });
-
 
 module.exports = router;
