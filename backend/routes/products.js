@@ -73,33 +73,68 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-
-// Use multer for file upload
+//update product
 router.put("/:id", upload.single("image"), async (req, res) => {
-    const productId = req.params.id;
-    const updatedProduct = req.body;
-  
-    if (req.file) {
-      updatedProduct.image = req.file.path;  // Save image path in the database
+  const productId = req.params.id;
+  const updatedProduct = req.body;
+
+  if (req.file) {
+    updatedProduct.image = req.file.path;  // Save uploaded image path
+  }
+
+  // Convert stock to number if provided
+  if (updatedProduct.stock !== undefined) {
+    updatedProduct.stock = Number(updatedProduct.stock);
+    if (isNaN(updatedProduct.stock) || updatedProduct.stock < 0) {
+      return res.status(400).json({ message: "Invalid stock value" });
     }
-  
-    try {
-      const db = await connectDB();
-      const result = await db.collection("products").updateOne(
-        { _id: new ObjectId(productId) }, 
-        { $set: updatedProduct }
-      );
-  
-      if (result.modifiedCount === 0) {
-        return res.status(404).json({ message: "Product not found" });
-      }
-  
-      res.status(200).json({ message: "Product updated successfully" });
-    } catch (err) {
-      console.error("Error updating product:", err);
-      res.status(500).json({ message: "Error updating product", error: err.message });
+  }
+
+  try {
+    const db = await connectDB();
+    const result = await db.collection("products").updateOne(
+      { _id: new ObjectId(productId) },
+      { $set: updatedProduct }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: "Product not found or no changes made" });
     }
-  });
+
+    res.status(200).json({ message: "Product updated successfully" });
+  } catch (err) {
+    console.error("Error updating product:", err);
+    res.status(500).json({ message: "Error updating product", error: err.message });
+  }
+});
+
+
+// update product
+// router.put("/:id", upload.single("image"), async (req, res) => {
+//     const productId = req.params.id;
+//     const updatedProduct = req.body;
+  
+//     if (req.file) {
+//       updatedProduct.image = req.file.path;  // Save image path in the database
+//     }
+  
+//     try {
+//       const db = await connectDB();
+//       const result = await db.collection("products").updateOne(
+//         { _id: new ObjectId(productId) }, 
+//         { $set: updatedProduct }
+//       );
+  
+//       if (result.modifiedCount === 0) {
+//         return res.status(404).json({ message: "Product not found" });
+//       }
+  
+//       res.status(200).json({ message: "Product updated successfully" });
+//     } catch (err) {
+//       console.error("Error updating product:", err);
+//       res.status(500).json({ message: "Error updating product", error: err.message });
+//     }
+//   });
 
   // In your backend route (Express.js)
     //router.get("/:id", async (req, res) => {

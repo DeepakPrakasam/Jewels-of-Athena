@@ -16,6 +16,7 @@ const EditProductForm = ({
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
+  const [stock, setStock] = useState("");
 
   const subCategoryOptions = {
     Gold: [
@@ -49,6 +50,7 @@ const EditProductForm = ({
       setDescription(product.description || "");
       setPrice(product.price || "");
       setImage(product.image || "");
+      setStock(product.stock || "");
     }
   }, [product]);
 
@@ -74,6 +76,7 @@ const EditProductForm = ({
       weight,
       description,
       price,
+      stock,
       image,
     };
     await handleEditSubmit(updatedProduct);
@@ -190,6 +193,16 @@ const EditProductForm = ({
             setPreviewImage(e.target.value);
           }}
           name="image"
+        />
+
+        <input
+          className="form-control mb-3"
+          type="number"
+          placeholder="Stock Quantity"
+          value={stock}
+          onChange={(e) => setStock(e.target.value)}
+          required
+          min="0"
         />
 
         {previewImage && (

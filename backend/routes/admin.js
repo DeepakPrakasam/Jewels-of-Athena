@@ -14,11 +14,12 @@ router.post("/add-product", verifyToken, isAdmin, async (req, res) => {
     description,
     price,
     image,
-    subcategory,  // Optional subcategory for products like Bangles, Earrings, etc.
-  } = req.body;
+    subcategory,
+    stock
+    } = req.body;
 
   // Validation (basic example)
-  if (!title || !category || !metalPurity || !weight || !description || !price || !image) {
+  if (!title || !category || !metalPurity || !weight || !description || !price || !image|| stock === undefined || stock === null) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -36,7 +37,8 @@ router.post("/add-product", verifyToken, isAdmin, async (req, res) => {
       price,
       image,
       subcategory: subcategory || null, // If subcategory is provided, insert it; otherwise, set as null
-      createdAt: new Date(), // Optionally, store creation timestamp
+      createdAt: new Date(),
+      stock: Number(stock),
     });
 
     res.status(200).json({ message: "Product added successfully" });

@@ -11,6 +11,7 @@ const AddProductForm = ({ toastRef }) => {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
+  const [stock, setStock] = useState("");
 
   const showToast = (message, type) => {
     toastRef.current?.show(message, type);
@@ -60,6 +61,7 @@ const AddProductForm = ({ toastRef }) => {
       weight,
       description,
       price,
+      stock,
       image,
     };
 
@@ -231,6 +233,20 @@ const AddProductForm = ({ toastRef }) => {
               onChange={(e) => setDescription(e.target.value)}
               rows="4"
             ></textarea>
+          </div>
+
+           {/* Stock */}
+          <div className="mb-3">
+            <input
+              type="number"
+              className="form-control"
+              id="stock"
+              placeholder="Stock Quantity"
+              required
+              value={stock}
+              onChange={(e) => setStock(e.target.value)}
+              min="0"
+            />
           </div>
 
           {/* Image URL */}

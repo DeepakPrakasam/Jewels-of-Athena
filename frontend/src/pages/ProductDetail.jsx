@@ -7,7 +7,7 @@ const ProductDetail = ({ toastRef }) => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const isLoggedIn = !!localStorage.getItem("token");
-  
+
   const showToast = (message, type) => {
     toastRef.current?.show(message, type);
   };
@@ -28,6 +28,7 @@ const ProductDetail = ({ toastRef }) => {
   const handleAddToCart = async () => {
     const token = localStorage.getItem("token");
     if (!token) return alert("Please login first.");
+    
 
     try {
       const res = await fetch("/api/cart/add", {
@@ -44,7 +45,10 @@ const ProductDetail = ({ toastRef }) => {
 
       const data = await res.json();
       if (res.ok) {
-        showToast("✅ " + data.message);
+        const msg = product.stock <= 0
+          ? "⚠️ Product is out of stock and added for backorder."
+          : "✅ Product added to cart.";
+        showToast(msg, product.stock <= 0 ? "warning" : "success");
       } else {
         showToast("❌ " + data.message);
       }
@@ -54,15 +58,23 @@ const ProductDetail = ({ toastRef }) => {
     }
   };
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   const handleBuyNow = () => {
+    if (!isLoggedIn) {
+      showToast("Please login to proceed with the purchase.", "danger");
+      return;
+    }
+
+    if (!product || product.stock <= 0) return;
+
     navigate("/checkout", {
       state: {
         product,
         quantity: 1,
       },
     });
+    
   };
 
   if (loading) {
@@ -158,6 +170,20 @@ const ProductDetail = ({ toastRef }) => {
               >
                 <strong>Price:</strong> ₹{product.price}
               </p>
+
+              <p
+                style={{
+                  fontSize: "1.1rem",
+                  color: product.stock > 0 ? "#28a745" : "#dc3545",
+                  marginBottom: "10px",
+                }}
+              >
+                <strong>Stock:</strong>{" "}
+                {product.stock > 0
+                  ? `${product.stock} available`
+                  : "Out of Stock"}
+              </p>
+
               <p
                 style={{
                   fontSize: "1.1rem",
@@ -191,7 +217,7 @@ const ProductDetail = ({ toastRef }) => {
                 </button>
                 <button
                   className="btn btn-success custom-btn"
-                  disabled={!isLoggedIn}
+                  disabled={!isLoggedIn || product.stock <= 0}
                   onClick={handleBuyNow}
                   style={{
                     padding: "10px 20px",
@@ -208,6 +234,15 @@ const ProductDetail = ({ toastRef }) => {
                   Buy Now
                 </button>
               </div>
+              {product.stock <= 0 && (
+                <p
+                  className="text-danger mt-2"
+                  style={{ fontSize: "1rem", fontWeight: "bold" }}
+                >
+                  This product is currently out of stock.
+                </p>
+              )}
+
               {!isLoggedIn && (
                 <p
                   className="text-danger mt-2"
