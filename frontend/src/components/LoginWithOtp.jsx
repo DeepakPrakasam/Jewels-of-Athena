@@ -5,6 +5,7 @@ function LoginWithOtp({ toastRef }) {
   const [step, setStep] = useState(1); // Step 1: enter email, Step 2: enter OTP
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const showToast = (message, type) => {
@@ -12,6 +13,7 @@ function LoginWithOtp({ toastRef }) {
   };
 
   const handleSendOtp = async () => {
+    setLoading(true);
     try {
       const res = await fetch("/api/auth/send-otp", {
         method: "POST",
@@ -30,10 +32,14 @@ function LoginWithOtp({ toastRef }) {
     } catch (err) {
       console.error("Send OTP error:", err);
       showToast("Error sending OTP", "danger");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleVerifyOtp = async () => {
+    setLoading(true);
+
     try {
       const res = await fetch("/api/auth/verify-otp", {
         method: "POST",
@@ -52,7 +58,8 @@ function LoginWithOtp({ toastRef }) {
 
         showToast("Login successful!", "success");
         setTimeout(() => {
-          window.location.href = decoded.role === "admin" ? "/admin/dashboard" : "/";
+          window.location.href =
+            decoded.role === "admin" ? "/admin/dashboard" : "/";
         }, 1500);
       } else {
         showToast(data.message || "Invalid OTP", "danger");
@@ -60,14 +67,19 @@ function LoginWithOtp({ toastRef }) {
     } catch (err) {
       console.error("Verify OTP error:", err);
       showToast("Error verifying OTP", "danger");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div style={{ maxWidth: 400, margin: "50px auto", textAlign: "center" }}>
       <h4>Login with OTP</h4>
-
-      {step === 1 ? (
+      {loading ? (
+        <div className="text-center mt-5">
+          <div className="spinner-border text-warning" role="status"></div>
+        </div>
+      ) : step === 1 ? (
         <>
           <input
             type="text"
@@ -83,7 +95,9 @@ function LoginWithOtp({ toastRef }) {
         </>
       ) : (
         <>
-          <p>OTP has been sent to: <strong>{emailOrPhone}</strong></p>
+          <p>
+            OTP has been sent to: <strong>{emailOrPhone}</strong>
+          </p>
           <input
             type="text"
             className="form-control mb-3"

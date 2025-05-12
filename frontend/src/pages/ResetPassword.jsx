@@ -7,9 +7,11 @@ function ResetPassword({ toastRef }) {
   const token = searchParams.get("token");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);  
+  
   const handleReset = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await fetch("/api/auth/reset-password", {
         method: "POST",
@@ -26,25 +28,34 @@ function ResetPassword({ toastRef }) {
       }
     } catch (err) {
       toastRef.current?.show("Reset failed", "danger");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="container mt-5" style={{ maxWidth: "500px" }}>
       <h4>Reset Password</h4>
-      <form onSubmit={handleReset}>
-        <input
-          type="password"
-          className="form-control mb-3"
-          placeholder="New Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit" className="btn btn-success w-100">
-          Reset Password
-        </button>
-      </form>
+      {/* Loading Indicator */}
+      {loading ? (
+        <div className="text-center mt-5">
+          <div className="spinner-border text-warning" role="status"></div>
+        </div>
+      ) : (
+        <form onSubmit={handleReset}>
+          <input
+            type="password"
+            className="form-control mb-3"
+            placeholder="New Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit" className="btn btn-success w-100">
+            Reset Password
+          </button>
+        </form>
+      )}
     </div>
   );
 }

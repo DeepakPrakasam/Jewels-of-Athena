@@ -1,14 +1,14 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const bodyParser = require("body-parser");  // Add this line
+const bodyParser = require("body-parser");  
 const connectDB = require("./db/mongoClient");
 
 dotenv.config();
 const app = express();
 
 app.use(cors());
-app.use(bodyParser.json());  // Use this middleware to parse JSON requests
+app.use(bodyParser.json());  
 
 // Routes
 
@@ -20,15 +20,19 @@ app.use('/api/auth', authRoutes);
 const adminRoutes = require('./routes/admin');
 app.use('/api/admin', adminRoutes);
 
+app.get("/api/test-proxy", (req, res) => {
+  res.json({ message: "Proxy is working!" });
+});
+
 const productRoutes = require("./routes/products");  
 app.use("/api/products", productRoutes)
 
 const cartRoutes = require("./routes/cart");
-app.use("/api/cart", cartRoutes);  // ✅ Enables /api/cart/add etc.
+app.use("/api/cart", cartRoutes);  
 ;             
 
-const orderRoutes = require("./routes/orders");  // 👈 Add this line
-app.use("/api/orders", orderRoutes);             // 👈 Enable the /api/orders endpoint
+const orderRoutes = require("./routes/orders");  
+app.use("/api/orders", orderRoutes);             
 
 
 

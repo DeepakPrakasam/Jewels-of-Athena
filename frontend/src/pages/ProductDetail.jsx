@@ -1,15 +1,48 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
+import Review from "../components/Review"; // Import the Review component
 
 const ProductDetail = ({ toastRef }) => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
+
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [name, setName] = useState("");
+  const [reviewsToShow, setReviewsToShow] = useState(5); // Number of reviews to display initially
   const isLoggedIn = !!localStorage.getItem("token");
-  
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+  const [pageLoading, setPageLoading] = useState(true);
+  const [cartLoading, setCartLoading] = useState(false);
+  const [reviewLoading, setReviewLoading] = useState(false);
+
   const showToast = (message, type) => {
     toastRef.current?.show(message, type);
+  };
+
+  // Function to render stars based on the rating
+  const renderStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const emptyStars = 5 - fullStars;
+    const stars = [];
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push("⭐");
+    }
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push("☆");
+    }
+
+    return stars.join(" ");
+  };
+
+  // Calculate the average rating
+  const calculateAverageRating = (reviews) => {
+    if (!reviews || reviews.length === 0) return 0;
+    const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
+    return (totalRating / reviews.length).toFixed(1);
   };
 
   useEffect(() => {
@@ -17,18 +50,17 @@ const ProductDetail = ({ toastRef }) => {
       .then((res) => res.json())
       .then((data) => {
         setProduct(data);
-        setLoading(false);
+        setPageLoading(false);
       })
       .catch((err) => {
         console.error("Error fetching product:", err);
-        setLoading(false);
+        setPageLoading(false);
       });
   }, [id]);
 
   const handleAddToCart = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) return alert("Please login first.");
-
+    if (!isLoggedIn) return alert("Please login first.");
+    setCartLoading(true);
     try {
       const res = await fetch("/api/cart/add", {
         method: "POST",
@@ -44,19 +76,30 @@ const ProductDetail = ({ toastRef }) => {
 
       const data = await res.json();
       if (res.ok) {
-        showToast("✅ " + data.message);
+        const msg =
+          product.stock <= 0
+            ? "⚠️ Product is out of stock and added for backorder."
+            : "✅ Product added to cart.";
+        showToast(msg, product.stock <= 0 ? "warning" : "success");
       } else {
         showToast("❌ " + data.message);
       }
     } catch (error) {
       console.error("Add to cart error:", error);
       alert("Something went wrong.");
+    } finally {
+      setCartLoading(false);
     }
   };
 
-  const navigate = useNavigate();
-
   const handleBuyNow = () => {
+    if (!isLoggedIn) {
+      showToast("Please login to proceed with the purchase.", "danger");
+      return;
+    }
+
+    if (!product || product.stock <= 0) return;
+
     navigate("/checkout", {
       state: {
         product,
@@ -65,13 +108,72 @@ const ProductDetail = ({ toastRef }) => {
     });
   };
 
-  if (loading) {
-    return <div className="text-center mt-5">Loading...</div>;
+  const handleSubmitReview = async (e) => {
+    e.preventDefault();
+    setReviewLoading(true);
+
+    if (!rating || !comment) {
+      return alert("Please fill out all fields.");
+    }
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return alert("You must be logged in to submit a review.");
+    }
+
+    try {
+      const response = await fetch(`/api/products/${product._id}/review`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Attach the JWT token here
+        },
+        body: JSON.stringify({
+          rating,
+          comment,
+          name: name, // Add the username or other required fields
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert(result.message);
+      } else {
+        alert(result.message || "Failed to submit review.");
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      alert("An error occurred while submitting your review.");
+    } finally {
+      setReviewLoading(false);
+    }
+  };
+
+  // Function to load more reviews
+  const handleLoadMoreReviews = () => {
+    setReviewsToShow(reviewsToShow + 5); // Load 5 more reviews
+  };
+
+  if (pageLoading) {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
   if (!product) {
     return <div className="text-center mt-5">Product not found.</div>;
   }
+
+  const averageRating = calculateAverageRating(product.reviews);
 
   return (
     <>
@@ -158,22 +260,41 @@ const ProductDetail = ({ toastRef }) => {
               >
                 <strong>Price:</strong> ₹{product.price}
               </p>
+
+              <p
+                style={{
+                  fontSize: "1.1rem",
+                  color: product.stock > 0 ? "#28a745" : "#dc3545",
+                  marginBottom: "10px",
+                }}
+              >
+                <strong>Stock:</strong>{" "}
+                {product.stock > 0
+                  ? `${product.stock} available`
+                  : "Out of Stock"}
+              </p>
+
               <p
                 style={{
                   fontSize: "1.1rem",
                   color: "#666",
                   marginBottom: "10px",
-                  textAlign: "justify", // Justify the description text
-                  lineHeight: "1.4", // Adjust line height for readability
+                  textAlign: "justify",
+                  lineHeight: "1.4",
                 }}
               >
                 <strong>Description:</strong> {product.description}
               </p>
 
+              {/* Display the average rating */}
+              <div className="mt-3">
+                <h5>Average Rating: {renderStars(averageRating)}</h5>
+              </div>
+
               <div className="mt-4 d-flex justify-content-start gap-3">
                 <button
                   className="btn btn-warning custom-btn"
-                  disabled={!isLoggedIn}
+                  disabled={!isLoggedIn || cartLoading}
                   onClick={handleAddToCart}
                   style={{
                     padding: "10px 20px",
@@ -187,11 +308,20 @@ const ProductDetail = ({ toastRef }) => {
                   }
                   onMouseLeave={(e) => (e.target.style.transform = "scale(1)")}
                 >
-                  Add to Cart
+                  {cartLoading ? (
+                    <div
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                    >
+                      <span className="visually-hidden">Adding...</span>
+                    </div>
+                  ) : (
+                    "Add to Cart"
+                  )}
                 </button>
                 <button
                   className="btn btn-success custom-btn"
-                  disabled={!isLoggedIn}
+                  disabled={!isLoggedIn || product.stock <= 0}
                   onClick={handleBuyNow}
                   style={{
                     padding: "10px 20px",
@@ -208,6 +338,15 @@ const ProductDetail = ({ toastRef }) => {
                   Buy Now
                 </button>
               </div>
+              {product.stock <= 0 && (
+                <p
+                  className="text-danger mt-2"
+                  style={{ fontSize: "1rem", fontWeight: "bold" }}
+                >
+                  This product is currently out of stock.
+                </p>
+              )}
+
               {!isLoggedIn && (
                 <p
                   className="text-danger mt-2"
@@ -219,7 +358,77 @@ const ProductDetail = ({ toastRef }) => {
             </div>
           </div>
         </div>
+
+        {/* Reviews Section */}
+        <div className="mt-5">
+          <h4>Customer Reviews</h4>
+          <div className="d-flex overflow-auto gap-3">
+            {product.reviews?.slice(0, reviewsToShow).map((rev, index) => (
+              <Review key={index} review={rev} renderStars={renderStars} />
+            ))}
+          </div>
+          {product.reviews?.length > reviewsToShow && (
+            <div className="mt-3">
+              <button
+                className="btn btn-primary"
+                onClick={handleLoadMoreReviews}
+              >
+                Load More
+              </button>
+            </div>
+          )}
+
+          {/* Review Form */}
+          {isLoggedIn && (
+            <form onSubmit={handleSubmitReview} className="mt-4">
+              <div className="form-group mt-3">
+                <label>Name</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="form-control"
+                  required
+                />
+              </div>
+              <div className="form-group mt-2">
+                <label>Rating (1-5)</label>
+                <input
+                  type="number"
+                  value={rating}
+                  min="1"
+                  max="5"
+                  onChange={(e) => setRating(e.target.value)}
+                  className="form-control"
+                  required
+                />
+              </div>
+              <div className="form-group mt-2">
+                <label>Comment</label>
+                <textarea
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  className="form-control"
+                  required
+                />
+              </div>
+              <button className="btn btn-primary mt-3" disabled={reviewLoading}>
+                {reviewLoading ? (
+                  <div
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                  >
+                    <span className="visually-hidden">Submitting...</span>
+                  </div>
+                ) : (
+                  "Submit Review"
+                )}
+              </button>
+            </form>
+          )}
+        </div>
       </div>
+
       <Footer />
     </>
   );

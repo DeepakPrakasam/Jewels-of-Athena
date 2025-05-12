@@ -11,6 +11,8 @@ const AddProductForm = ({ toastRef }) => {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
+  const [stock, setStock] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const showToast = (message, type) => {
     toastRef.current?.show(message, type);
@@ -49,6 +51,7 @@ const AddProductForm = ({ toastRef }) => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     console.log("🔥 Form submitted");
 
     // Prepare product data to send to backend
@@ -60,6 +63,7 @@ const AddProductForm = ({ toastRef }) => {
       weight,
       description,
       price,
+      stock,
       image,
     };
 
@@ -97,6 +101,9 @@ const AddProductForm = ({ toastRef }) => {
       console.error("Request failed:", err);
       // Handle error in case of network failure
     }
+    finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -122,7 +129,12 @@ const AddProductForm = ({ toastRef }) => {
         >
           <h4 className="mb-3 rounded-3">Add New Product</h4>
         </div>
-
+          {/* Loading Indicator */}
+        {loading ? (
+          <div className="text-center mt-5">
+            <div className="spinner-border text-warning" role="status"></div>
+          </div>
+        ) : (
         <form onSubmit={handleSubmit}>
           <h4 className="d-flex justify-content-center">
             Add a New Product to Your Store
@@ -233,6 +245,20 @@ const AddProductForm = ({ toastRef }) => {
             ></textarea>
           </div>
 
+           {/* Stock */}
+          <div className="mb-3">
+            <input
+              type="number"
+              className="form-control"
+              id="stock"
+              placeholder="Stock Quantity"
+              required
+              value={stock}
+              onChange={(e) => setStock(e.target.value)}
+              min="0"
+            />
+          </div>
+
           {/* Image URL */}
           <div className="mb-3">
             <input
@@ -253,6 +279,7 @@ const AddProductForm = ({ toastRef }) => {
             </button>
           </div>
         </form>
+        )}
       </div>
 
       <Footer />

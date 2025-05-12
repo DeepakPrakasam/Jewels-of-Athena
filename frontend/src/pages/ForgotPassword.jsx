@@ -2,9 +2,12 @@ import { useState } from "react";
 
 function ForgotPassword({ toastRef }) {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await fetch("/api/auth/forgot-password", {
         method: "POST",
@@ -24,12 +27,21 @@ function ForgotPassword({ toastRef }) {
     } catch (err) {
       toastRef.current?.show("Server error", "danger");
     }
+    finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="container mt-5" style={{ maxWidth: "500px" }}>
       <h4>Forgot Password</h4>
       <p>Enter your email to receive a password reset link.</p>
+      {/* Loading Indicator */}
+      {loading ? (
+          <div className="text-center mt-5">
+            <div className="spinner-border text-warning" role="status"></div>
+          </div>
+        ) : (
       <form onSubmit={handleSubmit}>
         <input
           type="email"
@@ -43,6 +55,7 @@ function ForgotPassword({ toastRef }) {
           Send Reset Link
         </button>
       </form>
+        )}
     </div>
   );
 }

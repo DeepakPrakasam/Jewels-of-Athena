@@ -1,28 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
+
 const Cart = ({ toastRef }) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const showToast = (message, type) => {
     toastRef.current?.show(message, type);
   };
-
+  useEffect(() => {
+    fetchCart();
+  }, []);
+  
   const fetchCart = () => {
     const token = localStorage.getItem("token");
     if (!token) return;
-
+  
     const payload = JSON.parse(atob(token.split(".")[1]));
     const userId = payload?.id;
-
+  
     fetch(`/api/cart/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     })
-      .then((res) => res.json())
-      .then((data) => {
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Server Error");
+        const data = await res.json();
         setItems(data);
         setLoading(false);
       })
@@ -31,10 +35,7 @@ const Cart = ({ toastRef }) => {
         setLoading(false);
       });
   };
-
-  useEffect(() => {
-    fetchCart();
-  }, []);
+  
 
   const handleRemove = async (productId) => {
     const token = localStorage.getItem("token");
@@ -50,23 +51,19 @@ const Cart = ({ toastRef }) => {
 
       const data = await res.json();
       if (res.ok) {
-        showToast("🗑️ " + data.message,"success");
-        fetchCart(); // refresh cart
+        showToast("🗑️ " + data.message, "success");
+        fetchCart();
       } else {
-        showToast("❌ " + data.message,"danger");
+        showToast("❌ " + data.message, "danger");
       }
     } catch (err) {
       console.error("Remove item error:", err);
     }
   };
 
-  const navigate = useNavigate();
-
   const handleCheckout = () => {
     navigate("/checkout", {
-      state: {
-        cartItems: items,
-      },
+      state: { cartItems: items },
     });
   };
 
@@ -81,80 +78,121 @@ const Cart = ({ toastRef }) => {
 
   return (
     <>
-      <div className="container mt-5">
-        <h2>Your Cart</h2>
+      <div className="container mt-4 mb-5">
+        <h2 className="text-center mb-4">Your Cart</h2>
         {items.length === 0 ? (
-          <p>Your cart is empty.</p>
+          <p className="text-center">Your cart is empty.</p>
         ) : (
           <>
-            <table className="table align-middle">
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Qty</th>
-                  <th>Price</th>
-                  <th>Subtotal</th>
-                  <th>{/* for remove btn */}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item) => {
-                  const imageSrc = item.product.image?.startsWith("http")
-                    ? item.product.image
-                    : `/${item.product.image}`;
+            <div className="table-responsive">
+              <table className="table table-bordered align-middle">
+                <thead className="table-light">
+                  <tr>
+                    <th>Product</th>
+                    <th className="text-center">Qty</th>
+                    <th className="text-center">Price</th>
+                    <th className="text-center">Subtotal</th>
+                    <th className="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.map((item) => {
+                    if (!item.product) {
+                      return (
+                        <tr key={item._id}>
+                          <td colSpan="5" className="text-muted text-center">
+                            This product is no longer available.
+                            <button
+                              className="btn btn-sm btn-outline-danger ms-3"
+                              onClick={() =>
+                                handleRemove(
+                                  item.productId || item.product?._id
+                                )
+                              }
+                            >
+                              Remove
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    }
 
-                  return (
-                    <tr key={item._id}>
-                      <td>
-                        <div className="d-flex align-items-center gap-3">
-                          <img
-                            src={imageSrc}
-                            alt={item.product.title}
-                            style={{
-                              width: "60px",
-                              height: "60px",
-                              objectFit: "cover",
-                              borderRadius: "8px",
-                            }}
-                          />
-                          <span>{item.product.title}</span>
-                        </div>
-                      </td>
-                      <td>{item.quantity}</td>
-                      <td>₹{item.product.price}</td>
-                      <td>₹{item.quantity * item.product.price}</td>
-                      <td>
-                        <div className="d-flex flex-column gap-2">
-                          <button
-                            className="btn btn-sm btn-danger"
-                            onClick={() => handleRemove(item.product._id)}
-                          >
-                            Remove
-                          </button>
-                          <button
-                            className="btn btn-sm btn-primary"
-                            onClick={() =>
-                              navigate("/checkout", {
-                                state: {
-                                  product: item.product,
-                                  quantity: item.quantity,
-                                },
-                              })
-                            }
-                          >
-                            Checkout This
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-            <h4>Total: ₹{getTotal()}</h4>
-            <button className="btn btn-success mt-3" onClick={handleCheckout}>
-              Proceed to Checkout
-            </button>
+                    const imageSrc = item.product.image?.startsWith("http")
+                      ? item.product.image
+                      : `/${item.product.image}`;
+
+                    return (
+                      <tr key={item._id}>
+                        <td>
+                          <div className="d-flex align-items-center flex-wrap gap-3">
+                            <img
+                              src={imageSrc}
+                              alt={item.product.title}
+                              className="img-fluid"
+                              style={{
+                                width: "60px",
+                                height: "60px",
+                                objectFit: "cover",
+                                borderRadius: "8px",
+                              }}
+                            />
+                            <div>
+                              <span className="fw-semibold">
+                                {item.product.title}
+                              </span>
+                              {item.restocked === true ? (
+                                <span className="badge bg-success text-light ms-2">
+                                  Now Available
+                                </span>
+                              ) : item.backorder === true ? (
+                                <span className="badge bg-warning text-dark ms-2">
+                                  Backorder
+                                </span>
+                              ) : null}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="text-center">{item.quantity}</td>
+                        <td className="text-center">₹{item.product.price}</td>
+                        <td className="text-center">
+                          ₹{item.quantity * item.product.price}
+                        </td>
+                        <td className="text-center">
+                          <div className="d-flex flex-column flex-md-row justify-content-center gap-2">
+                            <button
+                              className="btn btn-sm btn-outline-danger"
+                              onClick={() => handleRemove(item.product._id)}
+                            >
+                              Remove
+                            </button>
+                            <button
+                              className="btn btn-sm btn-outline-primary"
+                              onClick={() =>
+                                navigate("/checkout", {
+                                  state: {
+                                    product: item.product,
+                                    quantity: item.quantity,
+                                  },
+                                })
+                              }
+                            >
+                              Checkout This
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="text-end mt-4">
+              <h4>Total: ₹{getTotal()}</h4>
+              <button className="btn btn-success mt-2" onClick={handleCheckout}>
+                Proceed to Checkout
+              </button>
+            </div>
           </>
         )}
       </div>
