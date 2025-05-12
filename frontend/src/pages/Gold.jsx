@@ -21,7 +21,7 @@ const GoldPage = () => {
   ];
 
   useEffect(() => {
-    fetch("https://dhandapani-jewellery.onrender.com/api/products/gold")
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/gold`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched goldItems =", data);
