@@ -8,7 +8,7 @@ function OrderHistory() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("/api/orders/history", {
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/orders/history`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setOrders(res.data))

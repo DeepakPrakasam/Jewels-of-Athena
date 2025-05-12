@@ -18,13 +18,13 @@ function AdminDashboard() {
     const fetchData = async () => {
       try {
         const [prodRes, orderRes, userRes] = await Promise.all([
-          axios.get("/api/admin/products/count", {
+          axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/products/count`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("/api/admin/orders/summary", {
+          axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/orders/summary`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("/api/admin/users/count", {
+          axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/users/count`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);

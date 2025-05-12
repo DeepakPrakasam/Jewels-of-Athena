@@ -11,7 +11,7 @@ function RevenueChart() {
     const fetchRevenueData = async () => {
       try {
         const token = localStorage.getItem("token"); // Get token from localStorage
-        const response = await axios.get('/api/admin/revenue-daily', {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/revenue-daily`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

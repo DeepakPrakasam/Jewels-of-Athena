@@ -16,7 +16,7 @@ const EditProductPage = ({ toastRef }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`/api/products/${id}`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/${id}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Failed to fetch product");
@@ -61,7 +61,7 @@ const EditProductPage = ({ toastRef }) => {
         formData.append(key, updatedData[key]);
       }
 
-      const res = await fetch(`/api/products/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/${id}`, {
         method: "PUT",
         body: formData,
       });

@@ -9,7 +9,7 @@ function VerifyEmail() {
       const token = params.get("token");
 
       try {
-        const res = await fetch(`/api/auth/verify-email?token=${token}`);
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/verify-email?token=${token}`);
         const text = await res.text();
         setMessage(text);
       } catch (err) {

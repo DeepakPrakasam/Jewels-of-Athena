@@ -46,7 +46,7 @@ const ProductDetail = ({ toastRef }) => {
   };
 
   useEffect(() => {
-    fetch(`/api/products/${id}`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setProduct(data);
@@ -62,7 +62,7 @@ const ProductDetail = ({ toastRef }) => {
     if (!isLoggedIn) return alert("Please login first.");
     setCartLoading(true);
     try {
-      const res = await fetch("/api/cart/add", {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/cart/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -123,7 +123,7 @@ const ProductDetail = ({ toastRef }) => {
     }
 
     try {
-      const response = await fetch(`/api/products/${product._id}/review`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/${product._id}/review`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

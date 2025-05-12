@@ -10,7 +10,7 @@ function ProductTypeChart() {
   useEffect(() => {
     const fetchProductCategories = async () => {
       try {
-        const response = await axios.get('/api/admin/product-categories');
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/admin/product-categories`);
         setProductCategories(response.data);
       } catch (error) {
         console.error('Error fetching product categories:', error);

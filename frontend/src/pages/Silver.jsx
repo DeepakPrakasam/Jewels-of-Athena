@@ -21,7 +21,7 @@ const SilverPage = () => {
   ];
 
   useEffect(() => {
-    fetch("/api/products/silver")
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/silver`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched silverItems =", data);

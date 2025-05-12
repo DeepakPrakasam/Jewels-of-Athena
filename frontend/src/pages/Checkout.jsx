@@ -99,7 +99,7 @@ const Checkout = ({ toastRef }) => {
           console.log("Payment Success:", response);
 
           // Simulate order saving call
-          const res = await fetch("/api/orders", {
+          const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/orders`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

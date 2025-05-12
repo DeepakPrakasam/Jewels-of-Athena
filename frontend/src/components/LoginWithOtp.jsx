@@ -15,7 +15,7 @@ function LoginWithOtp({ toastRef }) {
   const handleSendOtp = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/send-otp", {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/send-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ emailOrMobile: emailOrPhone }),
@@ -41,7 +41,7 @@ function LoginWithOtp({ toastRef }) {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/verify-otp", {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/auth/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ emailOrMobile: emailOrPhone, otp }),
