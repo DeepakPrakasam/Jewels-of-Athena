@@ -17,6 +17,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+
 // Signup route
 router.post("/signup", async (req, res) => {
   const { name, email, mobile, password, adminKey } = req.body;

@@ -54,6 +54,7 @@ const EditProductPage = ({ toastRef }) => {
   };
 
   const handleEditSubmit = async (updatedData) => {
+    setLoading(true);
     try {
       const formData = new FormData();
       for (let key in updatedData) {
@@ -78,6 +79,9 @@ const EditProductPage = ({ toastRef }) => {
     } catch (error) {
       console.error("Error submitting form:", error);
     }
+    finally {
+      setLoading(false);
+    }
   };
 
   if (loading || !editProduct) return <div>Loading...</div>;
@@ -86,6 +90,12 @@ const EditProductPage = ({ toastRef }) => {
     <>
       <div className="container mt-4">
         <h2>Edit Product</h2>
+        {/* Loading Indicator */}
+        {loading ? (
+          <div className="text-center mt-5">
+            <div className="spinner-border text-warning" role="status"></div>
+          </div>
+        ) : (
         <EditProductForm
           product={editProduct}
           handleEditChange={handleEditChange}
@@ -93,6 +103,7 @@ const EditProductPage = ({ toastRef }) => {
           previewImage={previewImage}
           setPreviewImage={setPreviewImage}
         />
+        )}
       </div>
       <Footer />
     </>

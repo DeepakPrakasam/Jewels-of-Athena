@@ -4,6 +4,7 @@ const connectDB = require("../db/mongoClient");
 const router = express.Router(); 
 const path = require("path");
 const fs = require("fs");
+const jwt = require('jsonwebtoken');
 
 const { ObjectId } = require("mongodb"); // Make sure this is at the top
 
@@ -171,6 +172,61 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ message: "Error fetching product", error: err.message });
   }
 });
+
+// POST /api/products/:id/review
+router.post("/:id/review", async (req, res) => {
+  const { rating, comment, name } = req.body;
+  const productId = req.params.id;
+
+  if (!rating || !comment || !name) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  try {
+    // Extract token from Authorization header
+    const token = req.headers.authorization?.split(" ")[1]; 
+    if (!token) {
+      return res.status(401).json({ message: "Token missing" });
+    }
+
+    // Decode the JWT token
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decodedToken.id;
+
+    // Connect to DB and get the product
+    const db = await connectDB();
+    const product = await db.collection("products").findOne({ _id: new ObjectId(productId) });
+
+    if (!product) {
+      console.error("Product not found with id:", productId);
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Prepare review object
+    const review = {
+      userId: new ObjectId(userId),
+      name,
+      rating: Number(rating),
+      comment,
+      createdAt: new Date(),
+    };
+
+    // Update product with new review
+    await db.collection("products").updateOne(
+      { _id: new ObjectId(productId) },
+      { $push: { reviews: review } }
+    );
+
+    //console.log("Review submitted successfully", review);
+    return res.status(200).json({ message: "Review submitted successfully" });
+
+  } catch (error) {
+    console.error("Error in review submission:", error);
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
+
 
   
 

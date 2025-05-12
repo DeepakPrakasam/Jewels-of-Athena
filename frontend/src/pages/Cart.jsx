@@ -24,9 +24,9 @@ const Cart = ({ toastRef }) => {
     fetch(`/api/cart/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Fetched cart:", data); 
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Server Error");
+        const data = await res.json();
         setItems(data);
         setLoading(false);
       })

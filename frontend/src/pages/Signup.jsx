@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 
 const Signup = ({ toastRef }) => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false); 
 
   const [form, setForm] = useState({
     name: "",
@@ -19,9 +20,11 @@ const Signup = ({ toastRef }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
   
     if (form.password !== form.confirmPassword) {
       toastRef?.current?.show("Passwords do not match", "danger");
+      setLoading(false);
       return;
     }
   
@@ -52,6 +55,10 @@ const Signup = ({ toastRef }) => {
       console.error("Signup error:", err);
       toastRef?.current?.show("Signup failed. Please try again.", "danger");
     }
+    finally {
+      setLoading(false);
+    }
+    
   };
   
 
@@ -79,6 +86,12 @@ const Signup = ({ toastRef }) => {
           <h4 className="mb-3 rounded-3">Dhandapani Jewellery</h4>
         </div>
 
+        {/* Loading Indicator */}
+        {loading ? (
+          <div className="text-center mt-5">
+            <div className="spinner-border text-warning" role="status"></div>
+          </div>
+        ) : (
         <form onSubmit={handleSubmit}>
           <h4 className="d-flex justify-content-center">Sign Up</h4>
           <p className="text-center">
@@ -174,6 +187,7 @@ const Signup = ({ toastRef }) => {
             </p>
           </div>
         </form>
+        )}
       </div>
       <Footer />
     </>
