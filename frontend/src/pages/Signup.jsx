@@ -71,7 +71,7 @@ const Signup = ({ toastRef }) => {
           padding: "20px",
           border: "1px solid #ddd",
           borderRadius: "20px",
-          backgroundColor: "#fff",
+          backgroundColor: "#fff ",
         }}
       >
         <div
@@ -80,7 +80,7 @@ const Signup = ({ toastRef }) => {
             padding: "15px",
             textAlign: "center",
             borderRadius: "10px 10px 0 0",
-            marginBottom: "20px",
+            marginBottom: " 20px",
           }}
         >
           <h4 className="mb-3 rounded-3">Dhandapani Jewellery</h4>

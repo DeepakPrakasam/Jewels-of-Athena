@@ -17,7 +17,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-
 // Signup route
 router.post("/signup", async (req, res) => {
   const { name, email, mobile, password, adminKey } = req.body;
@@ -50,6 +49,7 @@ router.post("/signup", async (req, res) => {
     await users.insertOne(newUser);
 
     const verifyLink = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
+    console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
 
     await transporter.sendMail({
       from: `"Dhandapani Jewellery" <${process.env.EMAIL_USER}>`,
