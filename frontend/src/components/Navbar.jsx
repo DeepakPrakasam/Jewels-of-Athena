@@ -107,13 +107,8 @@ function Navbar({ toastRef }) {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="#">
-                    <strong>Platinum</strong>
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="#">
-                    <strong>Collections</strong>
+                  <Link className="nav-link" to="/ourstory">
+                    <strong>Our Story</strong>
                   </Link>
                 </li>
               </>

@@ -24,6 +24,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import OrderHistory from './pages/OrderHistory';
 import ManageOrders from './components/ManageOrders';
+import OurStory from './pages/OurStory';
 
 function App() {
   const toastRef = useRef();
@@ -37,6 +38,7 @@ function App() {
         <Route path="/" element={<Home toastRef={toastRef} />} />
         <Route path="/gold" element={<Gold toastRef={toastRef} />} />
         <Route path="/silver" element={<Silver toastRef={toastRef} />} />
+        <Route path="/ourstory" element={<OurStory toastRef={toastRef} />} />
         <Route path="/product/:id" element={<ProductDetail toastRef={toastRef} />} />
         <Route path="/cart" element={<Cart toastRef={toastRef} />} />
         <Route path="/goldpage/:category" element={<Gold toastRef={toastRef} />} />

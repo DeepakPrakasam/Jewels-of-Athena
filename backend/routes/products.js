@@ -41,6 +41,7 @@ router.get("/silver", async (req, res) => {
   }
 });
 
+
 // DELETE product
 router.delete("/:id", async (req, res) => {
   try {
