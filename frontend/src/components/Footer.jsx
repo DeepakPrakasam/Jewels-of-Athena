@@ -20,27 +20,27 @@ function Footer() {
           </div>
 
           {/* Useful Links */}
-          {/* <div className="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+          <div className="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
             <h5 className="text-uppercase mb-4 font-weight-bold">
               Useful Links
             </h5>
             <p>
-              <a href="#" className="text-white text-decoration-none">
+              <a href="/login" className="text-white text-decoration-none">
                 Delivery Information
               </a>
             </p>
             <p>
-              <a href="#" className="text-white text-decoration-none">
+              <a href="/login" className="text-white text-decoration-none">
                 International Shipping
               </a>
             </p>
             <p>
-              <a href="#" className="text-white text-decoration-none">
+              <a href="/login" className="text-white text-decoration-none">
                 Payment Options
               </a>
             </p>
             <p>
-              <a href="#" className="text-white text-decoration-none">
+              <a href="/login" className="text-white text-decoration-none">
                 Track your Order
               </a>
             </p>
@@ -54,28 +54,28 @@ function Footer() {
                 Find a Store
               </a>
             </p>
-          </div> */}
+          </div>
 
           {/* Information */}
           <div className="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
             <h5 className="text-uppercase mb-4 font-weight-bold">
               Information
             </h5>
-            {/* <p>
+            <p>
               <a href="#" className="text-white text-decoration-none">
                 Blog
               </a>
-            </p> */}
-            {/* <p>
+            </p>
+            <p>
               <a href="#" className="text-white text-decoration-none">
                 Offers & Contest Details
               </a>
-            </p> */}
-            {/* <p>
+            </p>
+            <p>
               <a href="#" className="text-white text-decoration-none">
                 Help & FAQs
               </a>
-            </p> */}
+            </p>
             <p>
               <a href="/ourstory" className="text-white text-decoration-none">
                 About Dhandapani Jewellery
