@@ -20,7 +20,7 @@ router.post("/add-product", verifyToken, isAdmin, async (req, res) => {
     stock,
   } = req.body;
 
-  // Validation (basic example)
+  
   if (
     !title ||
     !category ||
@@ -39,7 +39,7 @@ router.post("/add-product", verifyToken, isAdmin, async (req, res) => {
     const db = await connectDB();
     const products = db.collection("products");
 
-    // Inserting the product into the database
+    
     await products.insertOne({
       title,
       category,
@@ -48,7 +48,7 @@ router.post("/add-product", verifyToken, isAdmin, async (req, res) => {
       description,
       price,
       image,
-      subcategory: subcategory || null, // If subcategory is provided, insert it; otherwise, set as null
+      subcategory: subcategory || null, 
       createdAt: new Date(),
       stock: Number(stock),
     });
@@ -70,7 +70,7 @@ router.get("/orders", verifyToken, isAdmin, async (req, res) => {
       {
         $lookup: {
           from: "users",
-          localField: "userId",       // Already an ObjectId now
+          localField: "userId",       
           foreignField: "_id",
           as: "user",
         },
@@ -190,7 +190,7 @@ router.get("/revenue-daily", verifyToken, isAdmin, async (req, res) => {
         }
       },
       {
-        $sort: { _id: 1 } // Sort by date ascending
+        $sort: { _id: 1 } 
       },
       {
         $project: {
@@ -226,7 +226,7 @@ router.get("/product-categories", async (req, res) => {
       count: item.count,
     }));
 
-    res.json(response); // Send data for the chart
+    res.json(response); 
   } catch (error) {
     console.error("Error fetching product categories:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -246,8 +246,8 @@ router.get("/revenue-summary", async (req, res) => {
           $project: {
             totalAmount: 1,
             createdAt: 1,
-            week: { $isoWeek: "$createdAt" }, // Extract ISO Week
-            year: { $isoWeekYear: "$createdAt" }, // Extract year
+            week: { $isoWeek: "$createdAt" }, 
+            year: { $isoWeekYear: "$createdAt" }, 
           },
         },
         {
@@ -256,17 +256,17 @@ router.get("/revenue-summary", async (req, res) => {
             totalRevenue: { $sum: "$totalAmount" },
           },
         },
-        { $sort: { "_id.year": 1, "_id.week": 1 } }, // Sort by year and week
+        { $sort: { "_id.year": 1, "_id.week": 1 } }, 
       ])
       .toArray();
 
-    // Format the result for the frontend
+    
     const response = result.map((item) => ({
       week: `${item._id.year}-W${item._id.week}`,
       revenue: item.totalRevenue,
     }));
 
-    res.json(response); // Send revenue data for the chart
+    res.json(response); 
   } catch (error) {
     console.error("Error fetching revenue:", error);
     res.status(500).json({ error: "Internal Server Error" });

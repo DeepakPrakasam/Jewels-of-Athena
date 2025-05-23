@@ -6,7 +6,7 @@ const path = require("path");
 const fs = require("fs");
 const jwt = require('jsonwebtoken');
 
-const { ObjectId } = require("mongodb"); // Make sure this is at the top
+const { ObjectId } = require("mongodb"); 
 
 // GET all products
 router.get("/", async (req, res) => {
@@ -81,7 +81,7 @@ router.put("/:id", upload.single("image"), async (req, res) => {
   const updatedProduct = req.body;
 
   if (req.file) {
-    updatedProduct.image = req.file.path;  // Save uploaded image path
+    updatedProduct.image = req.file.path; 
   }
 
   // Convert stock to number if provided
@@ -110,51 +110,6 @@ router.put("/:id", upload.single("image"), async (req, res) => {
   }
 });
 
-
-// update product
-// router.put("/:id", upload.single("image"), async (req, res) => {
-//     const productId = req.params.id;
-//     const updatedProduct = req.body;
-  
-//     if (req.file) {
-//       updatedProduct.image = req.file.path;  // Save image path in the database
-//     }
-  
-//     try {
-//       const db = await connectDB();
-//       const result = await db.collection("products").updateOne(
-//         { _id: new ObjectId(productId) }, 
-//         { $set: updatedProduct }
-//       );
-  
-//       if (result.modifiedCount === 0) {
-//         return res.status(404).json({ message: "Product not found" });
-//       }
-  
-//       res.status(200).json({ message: "Product updated successfully" });
-//     } catch (err) {
-//       console.error("Error updating product:", err);
-//       res.status(500).json({ message: "Error updating product", error: err.message });
-//     }
-//   });
-
-  // In your backend route (Express.js)
-    //router.get("/:id", async (req, res) => {
-    //const productId = req.params.id;
-    //try {
-      //const db = await connectDB();
-      //const product = await db.collection("products").findOne({ _id: new ObjectId(productId) });
-  
-     // if (!product) {
-      //  return res.status(404).json({ message: "Product not found" });
-     // }
-  
-      //res.status(200).json(product); // Return the found product
-   // } catch (err) {
-    //  console.error("Error fetching product:", err);
-      //res.status(500).json({ message: "Error fetching product", error: err.message });
-   // }
-  //});
 
   // GET a single product by ID
 router.get("/:id", async (req, res) => {

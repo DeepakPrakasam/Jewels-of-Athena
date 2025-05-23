@@ -240,7 +240,7 @@ function Login({ toastRef }) {
               </button>
             </div>
 
-            <div className="mb-3 text-center">
+            {/* <div className="mb-3 text-center">
               <p>Login with</p>
               <button
                 type="button"
@@ -248,7 +248,7 @@ function Login({ toastRef }) {
               >
                 <i className="fab fa-google me-2"></i> Google
               </button>
-            </div>
+            </div> */}
 
             <div className="text-center">
               <a href="/signup" style={{ color: "#7a2f00" }}>
