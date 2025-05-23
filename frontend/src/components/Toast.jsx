@@ -12,7 +12,7 @@ const Toast = forwardRef(({ message, type }, ref) => {
       toastElement.className = `toast align-items-center text-bg-${type} border-0`;
 
       try {
-        // ✅ Defensive check for Bootstrap Toast
+        
         if (window.bootstrap?.Toast) {
           const toast = new window.bootstrap.Toast(toastElement);
           toast.show();
@@ -20,11 +20,11 @@ const Toast = forwardRef(({ message, type }, ref) => {
           console.warn(
             "⚠️ Bootstrap Toast is not available. Using fallback alert."
           );
-          alert(message); // fallback
+          alert(message); 
         }
       } catch (err) {
         console.error("🚨 Toast error:", err);
-        alert(message); // fallback in case of unexpected error
+        alert(message); 
       }
     },
   }));

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
-import Review from "../components/Review"; // Import the Review component
+import Review from "../components/Review"; 
 
 const ProductDetail = ({ toastRef }) => {
   const { id } = useParams();
@@ -10,7 +10,7 @@ const ProductDetail = ({ toastRef }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [name, setName] = useState("");
-  const [reviewsToShow, setReviewsToShow] = useState(5); // Number of reviews to display initially
+  const [reviewsToShow, setReviewsToShow] = useState(5); 
   const isLoggedIn = !!localStorage.getItem("token");
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
@@ -127,12 +127,12 @@ const ProductDetail = ({ toastRef }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Attach the JWT token here
+          Authorization: `Bearer ${token}`, 
         },
         body: JSON.stringify({
           rating,
           comment,
-          name: name, // Add the username or other required fields
+          name: name, 
         }),
       });
 
@@ -153,7 +153,7 @@ const ProductDetail = ({ toastRef }) => {
 
   // Function to load more reviews
   const handleLoadMoreReviews = () => {
-    setReviewsToShow(reviewsToShow + 5); // Load 5 more reviews
+    setReviewsToShow(reviewsToShow + 5); 
   };
 
   if (pageLoading) {

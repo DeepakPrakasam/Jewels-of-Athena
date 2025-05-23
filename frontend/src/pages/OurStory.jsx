@@ -15,7 +15,7 @@ const OurStory = () => {
           className="text-center text-danger"
           style={{
             fontFamily: "Merriweather, serif",
-            fontSize: "clamp(1.8rem, 5vw, 3rem)", 
+            fontSize: "clamp(1.8rem, 5vw, 3rem)",
             fontStyle: "italic",
             fontWeight: "bold",
           }}
@@ -27,7 +27,7 @@ const OurStory = () => {
           className="text-center"
           style={{
             fontFamily: "Merriweather, serif",
-            fontSize: "clamp(1rem, 2.5vw, 2rem)", 
+            fontSize: "clamp(1rem, 2.5vw, 2rem)",
             fontWeight: 500,
             fontStyle: "italic",
           }}
@@ -48,7 +48,7 @@ const OurStory = () => {
           className="text-center fw-bold mb-4"
           style={{
             fontFamily: "Merriweather, serif",
-            fontSize: "clamp(1.8rem, 5vw, 3rem)", 
+            fontSize: "clamp(1.8rem, 5vw, 3rem)",
             fontStyle: "italic",
             fontWeight: "bold",
           }}
@@ -81,14 +81,14 @@ const OurStory = () => {
               <div className="card-body border-start border-4 border-warning ps-3">
                 <h5 className="fw-bold">Registered Office Address</h5>
                 <p className="mb-1">Dhandapani Jewellery India Pvt Ltd</p>
-                <p className="mb-1">Ward No.81, Door No.18, Dickenson Rd</p>
-                <p>Near RBANM' School, Bengaluru, Karnataka, India - 560042</p>
+                <p className="mb-1">T.C Main Road</p>
+                <p>Vellakovil, Tamil Nadu, India - 638111</p>
               </div>
             </div>
           </div>
 
           {/* Corporate Office */}
-          <div className="flex-fill" data-aos="zoom-in" data-aos-delay="200">
+          {/* <div className="flex-fill" data-aos="zoom-in" data-aos-delay="200">
             <div className="card h-100 shadow-sm border-warning border-2">
               <div className="card-body border-start border-4 border-warning ps-3">
                 <h5 className="fw-bold">Corporate Office</h5>
@@ -102,7 +102,7 @@ const OurStory = () => {
                 <p className="mb-1">Ph: 0487-2443791, 2443810</p>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

@@ -36,7 +36,7 @@ function AdminDashboard() {
           users: userRes.data.count,
         });
 
-        setRecentOrders(orderRes.data.recentOrders); // From backend
+        setRecentOrders(orderRes.data.recentOrders); 
       } catch (err) {
         console.error("Error loading dashboard", err);
       }

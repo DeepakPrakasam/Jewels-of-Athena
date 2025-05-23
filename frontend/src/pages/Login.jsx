@@ -14,7 +14,7 @@ function Login({ toastRef }) {
     toastRef.current?.show(message, type);
   };
 
-  // 🔐 Handle login with password
+  
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -51,7 +51,7 @@ function Login({ toastRef }) {
     }
   };
 
-  // ✉️ Send OTP to email/phone
+  
   const handleSendOtp = async () => {
     setLoading(true);
     try {
@@ -76,7 +76,6 @@ function Login({ toastRef }) {
     }
   };
 
-  // ✅ Verify OTP and log in
   const handleVerifyOtp = async () => {
     setLoading(true);
     try {
