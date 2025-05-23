@@ -15,7 +15,7 @@ const OurStory = () => {
           className="text-center text-danger"
           style={{
             fontFamily: "Merriweather, serif",
-            fontSize: "clamp(1.8rem, 5vw, 3rem)", // scales between 1.8rem and 3rem
+            fontSize: "clamp(1.8rem, 5vw, 3rem)", 
             fontStyle: "italic",
             fontWeight: "bold",
           }}
@@ -27,7 +27,7 @@ const OurStory = () => {
           className="text-center"
           style={{
             fontFamily: "Merriweather, serif",
-            fontSize: "clamp(1rem, 2.5vw, 2rem)", // scales between 1rem and 2rem
+            fontSize: "clamp(1rem, 2.5vw, 2rem)", 
             fontWeight: 500,
             fontStyle: "italic",
           }}
@@ -48,7 +48,7 @@ const OurStory = () => {
           className="text-center fw-bold mb-4"
           style={{
             fontFamily: "Merriweather, serif",
-            fontSize: "clamp(1.8rem, 5vw, 3rem)", // scales between 1.8rem and 3rem
+            fontSize: "clamp(1.8rem, 5vw, 3rem)", 
             fontStyle: "italic",
             fontWeight: "bold",
           }}
